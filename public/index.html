@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ADS – Espace de gestion</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--ink:#1b2230;--mut:#5d6778;--line:#dde1e8;--acc:#1f6f78;--fg:#fff;--warn:#9a6212;--bad:#a83a33;--ok:#237a4b}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14181f;--card:#1c222c;--ink:#e8ebf0;--mut:#9aa4b4;--line:#2c3441;--acc:#4fb3bf;--fg:#0d1a1c;--warn:#e0a850;--bad:#e27b73;--ok:#5fc48b}}
+:root[data-theme="dark"]{--bg:#14181f;--card:#1c222c;--ink:#e8ebf0;--mut:#9aa4b4;--line:#2c3441;--acc:#4fb3bf;--fg:#0d1a1c;--warn:#e0a850;--bad:#e27b73;--ok:#5fc48b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Figtree,system-ui,sans-serif}
+main{max-width:760px;margin:0 auto;padding:20px 16px 80px}h2{margin:.2em 0 .8em}h3{margin:0 0 .6em}
+header{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--line);flex-wrap:wrap}
+nav{display:flex;gap:4px;overflow-x:auto;flex:1}nav button{background:none;color:var(--mut);border:0;padding:8px 10px;border-radius:6px}nav button.on{color:var(--ink);background:var(--bg);font-weight:700}
+button{font:inherit;background:var(--acc);color:var(--fg);border:0;border-radius:6px;padding:9px 14px;cursor:pointer}button.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+input,select,textarea{font:inherit;width:100%;padding:9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+label{display:block;margin:0 0 12px;color:var(--mut);font-size:14px}label input,label select,label textarea{margin-top:4px;color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px;margin:0 0 14px}
+.row{display:flex;gap:10px;align-items:flex-end}.row>*{flex:1}.row button{flex:0 0 auto;margin-bottom:12px}
+.top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.mut{color:var(--mut)}.bad{color:var(--bad)}.pre{white-space:pre-wrap}
+.tag{font-size:13px;padding:2px 8px;border-radius:99px;border:1px solid var(--line)}.tag.ok{color:var(--ok);border-color:var(--ok)}.tag.no{color:var(--bad);border-color:var(--bad)}.tag.attente,.tag.form{color:var(--warn);border-color:var(--warn)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px}.stats div{border-left:3px solid var(--acc);padding:2px 12px}.stats b{display:block;font-size:28px}.stats span{color:var(--mut);font-size:14px}
+.note{border-left:3px solid var(--warn);padding:8px 12px;background:var(--card)}
+fieldset{border:0;padding:0;margin:0 0 14px}legend{font-weight:700;margin-bottom:4px}.opt{display:flex;gap:8px;align-items:center;margin:0 0 4px;color:var(--ink)}.opt input{width:auto;margin:0}
+.login{max-width:360px;margin-top:12vh}.login h1{margin:0}
+#t{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:6px;opacity:0;pointer-events:none;transition:opacity .2s}#t.on{opacity:1}
+@media(max-width:520px){.row{flex-direction:column;align-items:stretch}.row button{margin-bottom:0}}
+</style></head>
+<body><div id="app"></div><div id="t" role="status"></div>
+<script id="main">
+const K='ads_v1',$=s=>document.querySelector(s),e=s=>String(s??'').replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';'),uid=()=>Math.random().toString(36).slice(2,9);
+const VL={attente:'En attente',ok:'Acceptée',no:'Refusée'},NAV=[['dash','Accueil'],['rc','Recrutement'],['team','Profils'],['cr','Comptes rendus'],['quiz','Quiz'],['set','Réglages',1]];
+const tot=u=>u.pts.reduce((s,p)=>s+p.v,0);
+let S=null,me=null,page='dash',rcf='',pend=null,CODE=null;try{CODE=sessionStorage.getItem('ads_c')}catch(x){}
+async function api(m,u,b){try{const r=await fetch('/api/'+u,{method:m,headers:{'Content-Type':'application/json','x-code':CODE||''},body:b?JSON.stringify(b):undefined}),j=await r.json();if(!r.ok){toast(j.error||'Erreur');return null}if(j.S){S=j.S;me=j.me}return j}catch(x){toast('Serveur injoignable');return null}}
+function toast(m){const t=$('#t');t.textContent=m;t.className='on';clearTimeout(toast.k);toast.k=setTimeout(()=>t.className='',3500)}
+async function login(ev){ev.preventDefault();CODE=$('#code').value.trim();const j=await api('GET','state');if(!j){CODE=null;$('#err').textContent='Connexion refusée.';return}try{sessionStorage.setItem('ads_c',CODE)}catch(x){}render()}
+function logout(){CODE=null;S=null;me=null;try{sessionStorage.removeItem('ads_c')}catch(x){}render()}
+function go(p){page=p;render()}
+const rcRow=r=>`<div class="card"><div class="top"><b>${e(r.pseudo)}</b><span class="mut">${e(r.did)}</span><span class="tag ${r.v}">${VL[r.v]}</span>${r.v=='ok'&&!r.tr?'<span class="tag form">En attente de formation</span>':''}</div><p class="mut">${r.a.map(x=>e(x[0])+' : '+e(x[1])).join('<br>')}</p>${r.note?`<p>${e(r.note)}</p>`:''}${me.admin?`<div class="acts"><button onclick="verd('${r.id}','ok')">Accepter</button><button class="ghost" onclick="verd('${r.id}','attente')">Mettre en attente</button><button class="ghost" onclick="verd('${r.id}','no')">Refuser</button><button class="ghost" onclick="delRc('${r.id}')">Supprimer</button>${r.v=='ok'&&!r.tr?`<button class="ghost" onclick="trained('${r.id}')">Formation validée</button>`:''}</div>`:''}</div>`;
+const PAGES={
+dash(){const w=S.rcs.filter(r=>r.v=='attente').length,f=S.rcs.filter(r=>r.v=='ok'&&!r.tr),u=S.users.find(u=>u.id==me.id);
+ return `<h2>Accueil</h2><div class="stats"><div><b>${w}</b><span>candidatures en attente</span></div><div><b>${f.length}</b><span>en attente de formation</span></div><div><b>${S.crs.length}</b><span>comptes rendus</span></div>${u?`<div><b>${tot(u)}</b><span>tes points</span></div>`:''}</div>${f.length?`<div class="note">En attente de formation : ${f.map(r=>e(r.pseudo)).join(', ')}</div>`:''}`},
+rc(){return `<h2>Recrutement</h2><form class="card" onsubmit="addRc(event)"><h3>Nouvel entretien</h3><div class="row"><label>ID Discord<input name="did" required></label><label>Pseudo<input name="pseudo" required></label></div>${S.cfg.qs.map((q,i)=>`<label>${q[0]}<select name="q${i}">${q[1].map(o=>`<option>${o}</option>`).join('')}</select></label>`).join('')}<label>Remarques<textarea name="note" rows="3"></textarea></label><button>Enregistrer et envoyer le rapport</button></form><div class="acts">${[['','Toutes'],['attente','En attente'],['ok','Acceptées'],['no','Refusées']].map(f=>`<button class="${rcf==f[0]?'':'ghost'}" onclick="rcf='${f[0]}';render()">${f[1]}</button>`).join('')}</div><p></p>${S.rcs.filter(r=>!rcf||r.v==rcf).map(rcRow).join('')||'<p class="mut">Aucune candidature ici.</p>'}`},
+team(){const L=me.admin?S.users:S.users.filter(u=>u.id==me.id);
+ return `<h2>Profils</h2>${me.admin?`<form class="card row" onsubmit="addU(event)"><label>Nouveau gestionnaire<input name="n" required></label><button>Créer et générer un code</button></form>`:''}${L.map(u=>`<div class="card"><div class="top"><b>${e(u.name)}</b><span class="tag">${tot(u)} pts</span>${me.admin?`<span class="mut">code : ${e(u.code)}</span><button class="ghost" onclick="newCode('${u.id}')">Nouveau code</button><button class="ghost" onclick="delU('${u.id}')">Supprimer</button>`:''}</div>${me.admin?`<form class="row" onsubmit="addP(event,'${u.id}')"><label>Points<input name="v" type="number" required></label><label>Motif ou mission<input name="w" required></label><button>Ajouter</button></form>`:''}<ul>${u.pts.slice().reverse().map(p=>`<li>${p.v>0?'+':''}${p.v} : ${e(p.w)} <span class="mut">${new Date(p.d).toLocaleDateString('fr-FR')}</span></li>`).join('')||'<li class="mut">Aucun point pour le moment.</li>'}</ul></div>`).join('')||'<p class="mut">Aucun profil pour le moment.</p>'}`},
+cr(){return `<h2>Comptes rendus</h2><form class="card" onsubmit="addCr(event)"><label>Titre<input name="t" required></label><label>Compte rendu<textarea name="b" rows="6" required></textarea></label><button>Envoyer aux HG</button></form>${S.crs.map(c=>`<div class="card"><b>${e(c.t)}</b><p class="mut">${e(c.by)}, ${new Date(c.d).toLocaleString('fr-FR')}</p><p class="pre">${e(c.b)}</p></div>`).join('')}`},
+quiz(){const u=S.users.find(u=>u.id==me.id);return `<h2>Quiz de rappel de formation</h2><form class="card" onsubmit="grade(event)">${S.cfg.quiz.map((q,i)=>`<fieldset><legend>${q[0]}</legend>${q[1].map((o,j)=>`<label class="opt"><input type="radio" name="q${i}" value="${j}" required>${o}</label>`).join('')}</fieldset>`).join('')}<button>Corriger</button></form><p id="res"></p>${u&&u.qz!=null?`<p class="mut">Dernier score : ${u.qz}/${S.cfg.quiz.length}</p>`:''}`},
+set(){const c=S.cfg,h=c.hooks,H=(k,l)=>`<label>${l}<span class="row"><input id="h_${k}" value="${e(h[k])}" placeholder="https://discord.com/api/webhooks/..."><button type="button" class="ghost" style="margin:0" onclick="testHook('${k}')">Tester</button></span></label>`;
+ return `<h2>Réglages</h2><form class="card" onsubmit="saveCfg(event)"><h3>Général</h3><label>Nom du site<input name="n" value="${e(c.name)}" required></label><h3>Webhooks Discord</h3>${H('rc','Rapports d’entretien')}${H('dec','Décisions de candidature')}${H('cr','Comptes rendus')}<h3>Comptes HG</h3><label>Un par ligne : Nom | code (6 caractères minimum)<textarea name="hg" rows="3">${e(c.hg.map(x=>x.name+' | '+x.code).join('\n'))}</textarea></label><h3>Questions de l’entretien</h3><label>Un par ligne : Question | réponse 1 ; réponse 2 ; réponse 3<textarea name="qs" rows="6">${e(c.qs.map(q=>q[0]+' | '+q[1].join(' ; ')).join('\n'))}</textarea></label><h3>Questions du quiz</h3><label>Un par ligne : Question | réponse 1 ; réponse 2 | numéro de la bonne réponse<textarea name="quiz" rows="6">${e(c.quiz.map(q=>q[0]+' | '+q[1].join(' ; ')+' | '+(q[2]+1)).join('\n'))}</textarea></label><button>Enregistrer les réglages</button></form><div class="card"><h3>Passer la main</h3><p class="mut">Pour donner l’accès à ton supérieur, ajoute-lui un compte HG ci-dessus. Il se connecte avec son propre code et retrouve tout : les données sont partagées sur le serveur.</p></div>`}};
+function render(){const a=$('#app');document.title=(S?S.cfg.name:'ADS')+' – Espace de gestion';
+ if(!me){a.innerHTML=`<main class="login"><h1>Connexion</h1><p class="mut">Espace de gestion privé. Entre ton code personnel.</p><form onsubmit="login(event)"><label>Code d’accès<input id="code" type="password" autocomplete="off" required></label><button>Entrer</button><p id="err" class="bad"></p></form></main>`;return}
+ const nav=NAV.filter(n=>!n[2]||me.admin).map(n=>`<button class="${n[0]==page?'on':''}" onclick="go('${n[0]}')">${n[1]}</button>`).join('');
+ a.innerHTML=`<header><b>${e(S.cfg.name)}</b><nav>${nav}</nav><span class="mut">${e(me.name)}</span><button class="ghost" onclick="logout()">Quitter</button></header><main>${PAGES[page]()}</main>`}
+async function act(m,u,b,ok){const j=await api(m,u,b);if(j){render();if(ok)toast(ok)}return j}
+function addRc(ev){ev.preventDefault();const f=new FormData(ev.target);act('POST','rc',{did:f.get('did'),pseudo:f.get('pseudo'),a:S.cfg.qs.map((q,i)=>[q[0],f.get('q'+i)]),note:f.get('note')},'Rapport envoyé')}
+function verd(id,v){act('POST','rc/'+id+'/verdict',{v},'Décision enregistrée')}
+function trained(id){act('POST','rc/'+id+'/trained')}
+function conf(id,fn){if(pend!=id){pend=id;toast('Clique encore sur Supprimer pour confirmer');return}pend=null;fn()}
+function delRc(id){conf(id,()=>act('DELETE','rc/'+id))}
+function delU(id){conf(id,()=>act('DELETE','users/'+id))}
+function newCode(id){act('POST','users/'+id+'/code')}
+function addU(ev){ev.preventDefault();act('POST','users',{n:new FormData(ev.target).get('n')})}
+function addP(ev,id){ev.preventDefault();const f=new FormData(ev.target);act('POST','users/'+id+'/points',{v:Number(f.get('v')),w:f.get('w')})}
+function addCr(ev){ev.preventDefault();const f=new FormData(ev.target);act('POST','cr',{t:f.get('t'),b:f.get('b')},'Compte rendu envoyé')}
+async function grade(ev){ev.preventDefault();const f=new FormData(ev.target),n=S.cfg.quiz.length,j=await api('POST','quiz',{a:S.cfg.quiz.map((q,i)=>Number(f.get('q'+i)))});if(j)$('#res').textContent='Score : '+j.score+'/'+n+(j.score==n?'. Parfait.':'. Relis le règlement et réessaie.')}
+async function testHook(k){const url=$('#h_'+k).value.trim();if(!url){toast('Colle d’abord l’adresse du webhook');return}const j=await api('POST','hook-test',{url});if(j)toast(j.ok?'Message de test envoyé':'Discord a refusé cette adresse')}
+async function saveCfg(ev){ev.preventDefault();const f=new FormData(ev.target),P=t=>String(t).split('\n').map(l=>l.trim()).filter(Boolean).map(l=>l.split('|').map(x=>x.trim())),L=t=>t.split(';').map(o=>o.trim()).filter(Boolean);
+ const hg=P(f.get('hg')).filter(x=>x[0]&&x[1]).map(x=>({name:x[0],code:x[1]}));
+ const j=await api('PUT','config',{name:f.get('n'),hg,hooks:{rc:$('#h_rc').value,dec:$('#h_dec').value,cr:$('#h_cr').value},
+  qs:P(f.get('qs')).filter(x=>x[1]).map(x=>[x[0],L(x[1])]),quiz:P(f.get('quiz')).filter(x=>x[1]).map(x=>[x[0],L(x[1]),(parseInt(x[2])||1)-1])});
+ if(!j)return;const mine=hg.find(x=>x.name==me.name)||hg[0];CODE=mine.code;try{sessionStorage.setItem('ads_c',CODE)}catch(x){}
+ if(await api('GET','state')){render();toast('Réglages enregistrés')}else logout()}
+(async()=>{if(CODE&&!(await api('GET','state')))CODE=null;render()})();
+</script></body></html>
