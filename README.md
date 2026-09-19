@@ -1,24 +1,24 @@
 # ADS – Espace de gestion Discord
 
-Site privé avec serveur : codes d'accès vérifiés côté serveur, données partagées entre tous, webhooks Discord envoyés par le serveur.
-Aucune dépendance à installer (Node 18 ou plus).
+Site privé avec serveur : codes d'accès vérifiés côté serveur, données partagées, webhooks envoyés par le serveur. Aucune dépendance (Node 18+).
 
-## Lancer en local
-    node server.js
-Ouvre http://localhost:3000. Le code HG du premier démarrage s'affiche dans la console (ou impose-le avec `ADMIN_CODE=ton-code`).
+## Mise à jour d'un site déjà en ligne
+Sur GitHub : « Add file » > « Upload files », glisse `server.js` et `index.html` (ils remplacent les anciens), « Commit changes ». Railway redéploie tout seul. Les données existantes sont conservées.
 
-## Mettre en ligne (Railway, Render, Fly.io, VPS...)
-1. Mets ce dossier sur GitHub.
-2. Crée un service web depuis le dépôt. Commande de démarrage : `node server.js`.
-3. Variables : `ADMIN_CODE` = ton code HG de départ, `DATA_DIR` = `/data`.
-4. Ajoute un volume (disque persistant) monté sur `/data`. Sans lui, les données sont perdues à chaque redémarrage.
-5. Ouvre l'adresse fournie, connecte-toi avec `ADMIN_CODE`, puis va dans Réglages : webhooks, comptes HG, questions.
+## Première installation
+1. Mets les fichiers à la racine d'un dépôt GitHub (server.js, package.json, index.html, README.md).
+2. Service web Railway/Render depuis le dépôt, commande de démarrage `node server.js`.
+3. Variables : `ADMIN_CODE` = code du compte « Fondateur », `DATA_DIR` = `/data`.
+4. Volume (disque persistant) monté sur `/data`, sinon les données sont perdues à chaque redémarrage.
+5. Connecte-toi avec `ADMIN_CODE`, puis va dans Réglages.
 
-## Donner l'accès à ton supérieur
-Réglages > Comptes HG : ajoute une ligne `Nom | code` (6 caractères minimum). Il se connecte avec son code et peut tout régler.
+## Rangs et codes
+Rangs par défaut (du plus bas au plus haut, modifiables) : Gestionnaire, Senior, Vétéran, HG, Bras droit, Fondateur.
+Chaque compte a un code lié à son rang (SE-..., VE-..., HG-...), ou un code choisi (6 caractères minimum).
+Permissions réglables : tout voir et décider (HG), ajouter des points (Bras droit), Réglages et comptes (Bras droit).
+
+## Réglages (sans toucher au code)
+6 webhooks (entretiens, acceptés, refusés, en attente, formations, comptes rendus), ping du compte rendu, rangs, questions d'entretien, barème de points du compte rendu, quiz, tutoriels.
 
 ## Sécurité
-- Le code est vérifié à chaque requête ; 10 essais ratés maximum par IP toutes les 10 minutes.
-- Les webhooks ne sont visibles que des HG et doivent commencer par https://discord.com/api/webhooks/.
-- Change le code initial dès la première connexion, et utilise le site en HTTPS (fourni par les hébergeurs ci-dessus).
-- Les données sont dans `data/db.json` : copie-le de temps en temps.
+Code vérifié à chaque requête, 10 essais ratés max par IP toutes les 10 minutes. Webhooks visibles des seuls comptes ayant accès aux Réglages, limités à discord.com. Sauvegarde : `data/db.json`.
