@@ -3,45 +3,73 @@
 <title>ADS – Espace de gestion</title>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f5f6f8;--card:#fff;--ink:#1b2230;--mut:#5d6778;--line:#dde1e8;--acc:#1f6f78;--fg:#fff;--warn:#9a6212;--bad:#a83a33;--ok:#237a4b}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14181f;--card:#1c222c;--ink:#e8ebf0;--mut:#9aa4b4;--line:#2c3441;--acc:#4fb3bf;--fg:#0d1a1c;--warn:#e0a850;--bad:#e27b73;--ok:#5fc48b}}
-:root[data-theme="dark"]{--bg:#14181f;--card:#1c222c;--ink:#e8ebf0;--mut:#9aa4b4;--line:#2c3441;--acc:#4fb3bf;--fg:#0d1a1c;--warn:#e0a850;--bad:#e27b73;--ok:#5fc48b}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Figtree,system-ui,sans-serif}
-main{max-width:780px;margin:0 auto;padding:20px 16px 80px}h2{margin:.2em 0 .8em}h3{margin:1em 0 .5em}form>h3:first-child{margin-top:0}
-header{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--line);flex-wrap:wrap}
-nav{display:flex;gap:4px;overflow-x:auto;flex:1}nav button{background:none;color:var(--mut);border:0;padding:8px 10px;border-radius:6px;white-space:nowrap}nav button.on{color:var(--ink);background:var(--bg);font-weight:700}
-button{font:inherit;background:var(--acc);color:var(--fg);border:0;border-radius:6px;padding:9px 14px;cursor:pointer}button.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+:root{--bg:#07121d;--card:rgba(15,36,58,.72);--hdr:rgba(7,18,29,.78);--ink:#e9f4fb;--mut:#8fb0c6;--line:rgba(125,190,230,.2);--acc:#4cc9f0;--acc2:#3a86ff;--fg:#04141f;--warn:#f2b84b;--bad:#ff8a80;--ok:#4fd6a0;--in:rgba(4,14,24,.55);--sh:0 10px 30px rgba(0,0,0,.35)}
+@media(prefers-color-scheme:light){:root{--bg:#eaf3fa;--card:rgba(255,255,255,.88);--hdr:rgba(234,243,250,.85);--ink:#0d2236;--mut:#4b6a80;--line:rgba(30,90,140,.2);--acc:#0a77b5;--acc2:#2f6fdc;--fg:#fff;--warn:#8a5a00;--bad:#b3372f;--ok:#12805a;--in:rgba(255,255,255,.9);--sh:0 8px 24px rgba(20,60,100,.12)}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:var(--ink);font:16px/1.55 Figtree,system-ui,sans-serif;background:radial-gradient(900px 500px at 85% -5%,rgba(76,201,240,.22),transparent 60%),radial-gradient(800px 500px at -10% 15%,rgba(58,134,255,.18),transparent 60%),var(--bg);background-attachment:fixed}
+main{max-width:820px;margin:0 auto;padding:22px 16px 90px;animation:rise .35s ease}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){main{animation:none}*{transition:none!important}}
+h1,h2,h3{letter-spacing:-.01em}h2{margin:.2em 0 .8em;font-size:26px}h3{margin:1.1em 0 .5em;font-size:17px;color:var(--acc)}form>h3:first-child{margin-top:0}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:14px;padding:10px 18px 8px;background:var(--hdr);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);flex-wrap:wrap;row-gap:6px}
+.brand{display:flex;align-items:center;gap:8px;font-size:18px;flex:1}.logo{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:var(--fg);font-size:18px}.logo.big{width:56px;height:56px;font-size:30px;border-radius:16px;margin:0 auto 12px}
+nav{display:flex;gap:4px;overflow-x:auto;order:3;flex:0 0 100%;scrollbar-width:none;padding-bottom:2px}nav::-webkit-scrollbar{display:none}
+nav button{background:none;color:var(--mut);border:1px solid transparent;padding:7px 12px;border-radius:99px;white-space:nowrap;box-shadow:none}nav button:hover{color:var(--ink);transform:none;filter:none}
+nav button.on{color:var(--ink);background:rgba(76,201,240,.14);border-color:var(--line);font-weight:700}
+.who{order:2;display:flex;align-items:center;gap:8px;color:var(--mut);font-size:14px}
+button{font:inherit;font-weight:500;background:linear-gradient(135deg,var(--acc),var(--acc2));color:var(--fg);border:0;border-radius:10px;padding:9px 16px;cursor:pointer;transition:transform .12s,filter .12s;box-shadow:0 4px 14px rgba(58,134,255,.25)}
+button:hover{filter:brightness(1.1);transform:translateY(-1px)}button:active{transform:none}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}button.ghost:hover{background:rgba(76,201,240,.1)}
 button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-input,select,textarea{font:inherit;width:100%;padding:9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
-label{display:block;margin:0 0 12px;color:var(--mut);font-size:14px}label input,label select,label textarea{margin-top:4px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px;margin:0 0 14px}
+input,select,textarea{font:inherit;width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--in);color:var(--ink);transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--acc)}
+label{display:block;margin:0 0 12px;color:var(--mut);font-size:14px}label input,label select,label textarea{margin-top:5px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:0 0 14px;box-shadow:var(--sh);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .row{display:flex;gap:10px;align-items:flex-end}.row>*{flex:1}.row button{flex:0 0 auto;margin-bottom:12px}
 .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.acts select{width:auto}
-.mut{color:var(--mut)}.pre{white-space:pre-wrap}details summary{cursor:pointer;font-weight:500}details>*:not(summary){margin-top:8px}
-.tag{font-size:13px;padding:2px 8px;border-radius:99px;border:1px solid var(--line)}.tag.ok{color:var(--ok);border-color:var(--ok)}.tag.no{color:var(--bad);border-color:var(--bad)}.tag.attente,.tag.form{color:var(--warn);border-color:var(--warn)}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px}.stats div{border-left:3px solid var(--acc);padding:2px 12px}.stats b{display:block;font-size:28px}.stats span{color:var(--mut);font-size:14px}
-.note{border-left:3px solid var(--warn);padding:8px 12px;background:var(--card)}.log{padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
-fieldset{border:0;padding:0;margin:0 0 14px}legend{font-weight:700;margin-bottom:4px}.opt{display:flex;gap:8px;align-items:center;margin:0 0 4px;color:var(--ink)}.opt input{width:auto;margin:0}
-.login{max-width:360px;margin-top:12vh}.login h1{margin:0}.bad{color:var(--bad)}
-#t{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:6px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw}#t.on{opacity:1}
-@media(max-width:520px){.row{flex-direction:column;align-items:stretch}.row button{margin-bottom:0}}
+.mut{color:var(--mut)}.pre{white-space:pre-wrap}code{background:var(--in);padding:3px 8px;border-radius:8px;font-size:14px;word-break:break-all}
+details summary{cursor:pointer;font-weight:600}details>*:not(summary){margin-top:8px}
+.tag{font-size:13px;padding:2px 10px;border-radius:99px;border:1px solid var(--line);background:var(--in)}.tag.ok{color:var(--ok);border-color:var(--ok)}.tag.no{color:var(--bad);border-color:var(--bad)}.tag.attente,.tag.form{color:var(--warn);border-color:var(--warn)}.tag.rank{color:var(--acc);border-color:var(--acc)}
+.hero{position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px;border-radius:20px;border:1px solid var(--line);background:linear-gradient(135deg,rgba(76,201,240,.22),rgba(58,134,255,.1));margin-bottom:16px;box-shadow:var(--sh)}
+.hero:after{content:'❄';position:absolute;right:-8px;top:-34px;font-size:150px;opacity:.08}.hero h1{margin:.1em 0;font-size:30px}.hero p{margin:0}
+.pts{text-align:center;z-index:1}.pts b{display:block;font-size:42px;line-height:1;background:linear-gradient(135deg,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}.pts span{color:var(--mut);font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}.stats div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--sh)}
+.stats i{font-style:normal;font-size:20px}.stats b{display:block;font-size:26px;line-height:1.2}.stats span{color:var(--mut);font-size:14px}
+.note{border:1px solid var(--line);border-left:3px solid var(--warn);border-radius:10px;padding:10px 14px;background:var(--card)}.flash{border-color:var(--acc);box-shadow:0 0 0 3px rgba(76,201,240,.18)}
+.log{padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+fieldset{border:0;padding:0;margin:0 0 14px}legend{font-weight:700;margin-bottom:6px}.opt{display:flex;gap:8px;align-items:center;margin:0 0 4px;color:var(--ink)}.opt input{width:auto;margin:0}
+.chip{padding:6px 12px;border:1px solid var(--line);border-radius:99px;background:var(--in);margin:0;font-size:14px}
+.rich img,.rich video{max-width:100%;border-radius:12px;display:block;margin:8px 0}.rich iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:12px}.rich figure{margin:12px 0}.rich figcaption{font-size:13px}.rich p{margin:.4em 0}.rich a{color:var(--acc)}
+.login{min-height:100vh;display:grid;place-items:center;padding:16px;max-width:none;margin:0}.glass{width:100%;max-width:380px;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:30px 24px;box-shadow:var(--sh);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.glass h1{margin:.1em 0}.glass label{text-align:left}.glass button{width:100%}.bad{color:var(--bad)}
+#t{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--card);color:var(--ink);border:1px solid var(--acc);padding:10px 18px;border-radius:99px;box-shadow:var(--sh);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw;z-index:9}#t.on{opacity:1}
+@media(max-width:560px){.row{flex-direction:column;align-items:stretch}.row button{margin-bottom:0}.hero{flex-direction:column;align-items:flex-start}header{padding:8px 12px}.who span:first-child{display:none}}
 </style></head>
 <body><div id="app"></div><div id="t" role="status"></div>
 <script id="main">
 const $=s=>document.querySelector(s),e=s=>String(s??'').replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';'),r2=x=>Math.round(x*100)/100;
 const fd=s=>{const m=/^(\d{4})-(\d\d)-(\d\d)$/.exec(s||'');return m?m[3]+'/'+m[2]+'/'+m[1]:(s||'')};
 const VL={attente:'En attente',ok:'Acceptée',no:'Refusée'},LT={pts:'Points',ent:'Entretiens',dec:'Décisions',forma:'Formations',cr:'Comptes rendus',cpt:'Comptes',quiz:'Quiz',cfg:'Réglages'};
-const NAV=[['dash','Accueil'],['rc','Recrutement'],['team','Profils'],['cr','Comptes rendus'],['quiz','Quiz'],['logs','Logs'],['tuto','Tutoriels'],['set','Réglages']];
-let S=null,me=null,page='dash',rcf='',lf='',pend=null,fm=null,qid=null,CODE=null;try{CODE=sessionStorage.getItem('ads_c')}catch(x){}
+const NAV=[['dash','Accueil','🏠'],['rc','Recrutement','📋'],['team','Profils','👥'],['cr','Comptes rendus','📊'],['quiz','Quiz','🎓'],['logs','Logs','🧾'],['tuto','Tutoriels','📖'],['set','Réglages','⚙️']];
+let S=null,me=null,page='dash',rcf='',lf='',pend=null,fm=null,qid=null,flash=null;
 const can=k=>me.p[k],tot=u=>r2(u.pts.reduce((s,p)=>s+p.v,0)),miss=u=>r2(u.pts.filter(p=>p.t=='mission'&&!p.rep).reduce((s,p)=>s+p.v,0)),myu=()=>S.users.find(u=>u.id==me.id);
 const show={rc:()=>me.rec||can('hg'),logs:()=>can('hg'),set:()=>can('set')};
-const tut=l=>{const t=S.cfg.tutos.find(x=>x.t.toLowerCase()==l.toLowerCase());return t?`<details class="card"><summary>Tutoriel : ${e(t.t)}</summary><p class="pre">${e(t.b)}</p></details>`:''};
-async function api(m,u,b){try{const r=await fetch('/api/'+u,{method:m,headers:{'Content-Type':'application/json','x-code':CODE||''},body:b?JSON.stringify(b):undefined}),j=await r.json();if(!r.ok){toast(j.error||'Erreur');return null}if(j.S){S=j.S;me=j.me}return j}catch(x){toast('Serveur injoignable');return null}}
+const okU=u=>/^(\/media\/[0-9a-f]{16}\.\w+|https:\/\/[^\s"'<>]+)$/.test(u);
+const yt=u=>{const m=/^https:\/\/(?:www\.)?(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([\w-]{11})/.exec(u);return m&&m[1]};
+function rich(t){return String(t||'').split('\n').map(l=>{l=l.trim();if(!l)return'';let m;
+ if(m=/^(image|video|lien)\s*:\s*(\S+)(?:\s*\|\s*(.*))?$/i.exec(l)){const k=m[1].toLowerCase(),u=m[2],cap=m[3]?`<figcaption class="mut">${e(m[3])}</figcaption>`:'';
+  if(!okU(u))return`<p class="mut">Lien non autorisé : ${e(u)}</p>`;
+  if(k=='image')return`<figure><img loading="lazy" src="${e(u)}" alt="${e(m[3]||'')}">${cap}</figure>`;
+  if(k=='lien')return`<p><a href="${e(u)}" target="_blank" rel="noopener noreferrer">${e(m[3]||u)}</a></p>`;
+  const y=yt(u);return`<figure>${y?`<iframe src="https://www.youtube-nocookie.com/embed/${y}" allowfullscreen loading="lazy" referrerpolicy="no-referrer"></iframe>`:`<video controls preload="metadata" src="${e(u)}"></video>`}${cap}</figure>`}
+ if(l.startsWith('## '))return`<h3>${e(l.slice(3))}</h3>`;return`<p>${e(l)}</p>`}).join('')}
+const tut=l=>{const t=S.cfg.tutos.find(x=>x.t.toLowerCase()==l.toLowerCase());return t?`<details class="card"><summary>Tutoriel : ${e(t.t)}</summary><div class="rich">${rich(t.b)}</div></details>`:''};
+async function api(m,u,b,q){try{const r=await fetch('/api/'+u,{method:m,credentials:'same-origin',headers:{'Content-Type':'application/json','x-ads':'1'},body:b?JSON.stringify(b):undefined}),j=await r.json();if(!r.ok){if(!q)toast(j.error||'Erreur');return null}if(j.S){S=j.S;me=j.me}return j}catch(x){if(!q)toast('Serveur injoignable');return null}}
 function toast(m){const t=$('#t');t.textContent=m;t.className='on';clearTimeout(toast.k);toast.k=setTimeout(()=>t.className='',4000)}
-async function login(ev){ev.preventDefault();CODE=$('#code').value.trim();const j=await api('GET','state');if(!j){CODE=null;$('#err').textContent='Connexion refusée.';return}try{sessionStorage.setItem('ads_c',CODE)}catch(x){}render()}
-function logout(){CODE=null;S=null;me=null;try{sessionStorage.removeItem('ads_c')}catch(x){}render()}
-function go(p){page=p;fm=null;qid=null;render()}
-async function act(m,u,b,ok){const j=await api(m,u,b);if(j){render();if(ok)toast(ok)}return j}
+async function login(ev){ev.preventDefault();const j=await api('POST','login',{code:$('#code').value.trim()},1);if(!j){$('#err').textContent='Code inconnu ou trop d’essais.';return}render()}
+async function logout(){await api('POST','logout',{},1);S=null;me=null;flash=null;render()}
+function go(p){page=p;fm=null;qid=null;flash=null;render()}
+async function act(m,u,b,ok){const j=await api(m,u,b);if(j){if(j.newCode)flash=j.newCode;render();if(ok)toast(ok)}return j}
 
 const rcRow=r=>`<div class="card"><div class="top"><b>${e(r.cand)}</b><span class="mut">${e(r.did)}</span><span class="tag ${r.v}">${VL[r.v]}</span>${r.v=='ok'&&!r.tr?'<span class="tag form">En attente de formation</span>':''}${r.tr?'<span class="tag ok">Formé</span>':''}</div>
 <p class="mut">Le ${fd(r.date)}. Réalisé par ${e(r.by)}, supervisé par ${e(r.sup||'-')}.</p>
@@ -50,7 +78,7 @@ ${r.tr?`<p class="mut">Formé par ${e(r.trBy)}. ${e(r.trNote||'')}</p>`:''}
 <div class="acts">${can('hg')?`<button onclick="verd('${r.id}','ok')">Accepter</button><button class="ghost" onclick="verd('${r.id}','attente')">Mettre en attente</button><button class="ghost" onclick="verd('${r.id}','no')">Refuser</button><button class="ghost" onclick="delRc('${r.id}')">Supprimer</button>`:''}${r.v=='ok'&&!r.tr?`<button class="ghost" onclick="fm='${r.id}';render()">Formation terminée</button>`:''}</div>
 ${fm==r.id?`<form onsubmit="doTrain(event,'${r.id}')"><label>Remarques sur la formation<textarea name="n" rows="2"></textarea></label><button>Envoyer le rapport de formation</button></form>`:''}</div>`;
 
-const uCard=u=>`<div class="card"><div class="top"><b>${e(u.name)}</b><span class="tag">${e(u.rank)}</span>${u.rec?'<span class="tag">Recruteur</span>':''}<span class="tag">${tot(u)} pts</span>${can('set')?`<span class="mut">code : ${e(u.code)}</span>`:''}</div>
+const uCard=u=>`<div class="card"><div class="top"><b>${e(u.name)}</b><span class="tag rank">${e(u.rank)}</span>${u.rec?'<span class="tag">Recruteur</span>':''}<span class="tag">${tot(u)} pts</span></div>
 ${can('set')?`<div class="acts"><select onchange="setRank('${u.id}',this.value)">${S.cfg.ranks.map(r=>`<option${r==u.rank?' selected':''}>${e(r)}</option>`).join('')}</select><button class="ghost" onclick="newCode('${u.id}')">Nouveau code</button><button class="ghost" onclick="togRec('${u.id}')">Recruteur : ${u.rec?'retirer':'ajouter'}</button><button class="ghost" onclick="delU('${u.id}')">Supprimer</button></div>`:''}
 ${can('pts')?`<form class="row" onsubmit="addP(event,'${u.id}')"><label>Points (négatif pour retirer)<input name="v" type="number" step="any" required></label><label>Motif ou mission<input name="w" required></label><button>Ajouter</button></form>`:''}
 ${Object.keys(u.qz||{}).length?`<p class="mut">Quiz : ${Object.entries(u.qz).map(([k,v])=>e((S.cfg.quizzes.find(z=>z.id==k)||{t:k}).t)+' '+v).join(', ')}</p>`:''}
@@ -58,36 +86,50 @@ ${Object.keys(u.qz||{}).length?`<p class="mut">Quiz : ${Object.entries(u.qz).map
 
 const PAGES={
 dash(){const w=S.rcs.filter(r=>r.v=='attente').length,f=S.rcs.filter(r=>r.v=='ok'&&!r.tr);
- return `<h2>Accueil</h2>${tut('Accueil')}<div class="stats"><div><b>${tot(myu())}</b><span>tes points (${e(me.rank)})</span></div>${can('hg')?`<div><b>${w}</b><span>candidatures en attente</span></div><div><b>${f.length}</b><span>en attente de formation</span></div>`:''}<div><b>${S.crs.length}</b><span>comptes rendus</span></div></div>${can('hg')&&f.length?`<div class="note">En attente de formation : ${f.map(r=>e(r.cand)).join(', ')}</div><p></p>`:''}<p class="note">Le compte rendu est obligatoire chaque samedi avant 22h00, sous peine de sanction.</p>`},
+ return `<div class="hero"><div><span class="mut">Bienvenue</span><h1>${e(me.name)}</h1><p class="mut">${e(S.cfg.name)}</p></div><div class="pts"><b>${tot(myu())}</b><span>points</span></div></div>
+${S.cfg.home?`<div class="card rich">${rich(S.cfg.home)}</div>`:''}${tut('Accueil')}
+<div class="stats">${can('hg')?`<div><i>📥</i><b>${w}</b><span>candidatures en attente</span></div><div><i>🎓</i><b>${f.length}</b><span>en attente de formation</span></div>`:''}<div><i>📝</i><b>${S.crs.length}</b><span>comptes rendus</span></div><div><i>🏅</i><b>${e(me.rank)}</b><span>ton rang</span></div></div>
+${can('hg')&&f.length?`<div class="note">En attente de formation : ${f.map(r=>e(r.cand)).join(', ')}</div><p></p>`:''}<p class="note">Le compte rendu est obligatoire chaque samedi avant 22h00, sous peine de sanction.</p>`},
 rc(){const today=new Date().toISOString().slice(0,10);let i=0;
  const qs=S.cfg.rq.map((l,j)=>l.startsWith('##')?`<h3>${e(l.replace(/^#+\s*/,''))}</h3>`:`<label>Question ${++i} : ${e(l)}<textarea name="a${j}" rows="2" placeholder="Réponse"></textarea></label>`).join('');
  return `<h2>Recrutement</h2>${tut('Recrutement')}<form class="card" onsubmit="addRc(event)"><h3>Nouvel entretien</h3><div class="row"><label>Candidat (pseudo)<input name="cand" required></label><label>ID Discord<input name="did" inputmode="numeric"></label></div><div class="row"><label>Date de l’entretien<input type="date" name="date" value="${today}"></label><label>Réalisé par<input name="by" value="${e(me.name)}"></label></div><label>Supervisé par<input name="sup"></label>${qs}<button>Enregistrer et envoyer le rapport d’entretien</button></form>
 <div class="acts">${[['','Toutes'],['attente','En attente'],['ok','Acceptées'],['no','Refusées']].map(f=>`<button class="${rcf==f[0]?'':'ghost'}" onclick="rcf='${f[0]}';render()">${f[1]}</button>`).join('')}</div><p></p>${S.rcs.filter(r=>!rcf||r.v==rcf).map(rcRow).join('')||'<p class="mut">Aucun entretien ici.</p>'}`},
-team(){return `<h2>Profils</h2>${tut('Profils')}${can('set')?`<form class="card" onsubmit="addU(event)"><h3>Nouveau compte</h3><div class="row"><label>Nom<input name="n" required></label><label>ID Discord<input name="did"></label></div><div class="row"><label>Rang<select name="rank">${S.cfg.ranks.slice(0,S.cfg.ranks.indexOf(me.rank)+1).map(r=>`<option>${e(r)}</option>`).join('')}</select></label><label>Code (vide = automatique)<input name="code"></label></div><label class="opt"><input type="checkbox" name="rec">Recruteur (peut faire des entretiens)</label><button>Créer le compte</button></form>`:''}${S.users.map(uCard).join('')}`},
+team(){const fl=flash?`<div class="card flash"><b>Code de ${e(flash.name)}</b><div class="top"><code>${e(flash.code)}</code><button type="button" class="ghost" onclick="cp('${e(flash.code)}')">Copier</button></div><p class="mut">Ce code n’est affiché qu’une seule fois : note-le et transmets-le en privé.</p></div>`:'';
+ return `<h2>Profils</h2>${fl}${tut('Profils')}${can('set')?`<form class="card" onsubmit="addU(event)"><h3>Nouveau compte</h3><div class="row"><label>Nom<input name="n" required></label><label>ID Discord<input name="did"></label></div><div class="row"><label>Rang<select name="rank">${S.cfg.ranks.slice(0,S.cfg.ranks.indexOf(me.rank)+1).map(r=>`<option>${e(r)}</option>`).join('')}</select></label><label>Code (vide = automatique, 8 caractères minimum)<input name="code" autocomplete="off"></label></div><label class="opt"><input type="checkbox" name="rec">Recruteur (peut faire des entretiens)</label><button>Créer le compte</button></form>`:''}
+${can('pts')?`<form class="card" onsubmit="bulk(event)"><h3>Points en masse</h3><div class="row"><label>Points (négatif pour retirer)<input name="v" type="number" step="any" required></label><label>Motif ou mission<input name="w" required></label></div><p class="mut">Tous les membres d’un rang :</p><div class="acts">${S.cfg.ranks.map(r=>`<label class="opt chip"><input type="checkbox" name="rk" value="${e(r)}">${e(r)}</label>`).join('')}</div><p class="mut">Et/ou des membres précis :</p><div class="acts">${S.users.map(u=>`<label class="opt chip"><input type="checkbox" name="id" value="${u.id}">${e(u.name)}</label>`).join('')}</div><p></p><button>Ajouter les points aux personnes sélectionnées</button></form>`:''}${S.users.map(uCard).join('')}`},
 cr(){const u=myu(),fields=s=>S.cfg.stats.map((x,i)=>x.s==s&&(!x.rec||me.rec)?`<label>${x.e.startsWith('<')?'':e(x.e)} ${e(x.l)}<input type="number" name="s${i}" min="0" step="any" value="0"></label>`:'').join('');
  return `<h2>Comptes rendus</h2>${tut('Comptes rendus')}<form class="card" oninput="calc(this)" onsubmit="addCr(event)"><div class="row"><label>Pseudo<input name="pseudo" value="${e(me.name)}"></label><label>ID Discord<input name="did" value="${e(me.did||'')}"></label></div><h3>Activité principale</h3>${fields('main')}<div class="row"><label>Autres activités effectuées<input name="ot"></label><label>Points accordés<input type="number" name="op" step="any" value="0"></label></div><h3>Activité secondaire</h3>${fields('sec')}<h3>Point de vue</h3><label>Problèmes rencontrés sur le serveur, si oui lesquels ?<textarea name="prob" rows="2"></textarea></label><label>Améliorations suggérées<textarea name="amel" rows="2"></textarea></label><label>Ping supérieurs hiérarchiques<input name="ping"></label><h3>Activité Shibuya (optionnel)</h3><label>Vos statistiques<input name="shib"></label><label>Votre TikTok et Twitter<input name="tt"></label><p class="note">Justificatifs obligatoires : toutes les stats doivent être prouvées et documentées dans le serveur « Stats ADS » et dans les channels prévus.</p><p class="note" id="tot"></p><button>Envoyer le compte rendu</button></form>
- ${S.crs.map(c=>`<details class="card"><summary>${fd(c.date)} : ${c.total} pts, ${e(c.by)}</summary><p class="pre">${e(c.txt)}</p></details>`).join('')}`},
+ ${S.crs.map(c=>`<details class="card"><summary>${fd(c.date)} : ${c.total} pts, ${e(c.by)}</summary><p class="pre">${e(c.txt.replace(/<a?:\w+:\d+>/g,''))}</p></details>`).join('')}`},
 quiz(){const u=myu(),z=S.cfg.quizzes.find(x=>x.id==qid);
  if(z)return `<h2>${e(z.t)}</h2><form class="card" onsubmit="grade(event)">${z.q.map((q,i)=>`<fieldset><legend>${e(q[0])}</legend>${q[1].map((o,j)=>`<label class="opt"><input type="radio" name="q${i}" value="${j}" required>${e(o)}</label>`).join('')}</fieldset>`).join('')}<div class="acts"><button>Corriger</button><button type="button" class="ghost" onclick="qid=null;render()">Retour</button></div></form><p id="res"></p>`;
  return `<h2>Quiz</h2>${tut('Quiz')}${S.cfg.quizzes.map(z=>`<div class="card top"><b>${e(z.t)}</b><span class="mut">${z.q.length} questions</span>${u.qz[z.id]!=null?`<span class="tag ok">Dernier score : ${u.qz[z.id]}/${z.q.length}</span>`:''}<button onclick="qid='${z.id}';render()">Commencer</button></div>`).join('')||'<p class="mut">Aucun quiz.</p>'}`},
 logs(){return `<h2>Logs</h2><div class="acts">${[['','Tout'],...Object.entries(LT)].map(f=>`<button class="${lf==f[0]?'':'ghost'}" onclick="lf='${f[0]}';render()">${f[1]}</button>`).join('')}</div><p></p>${S.logs.filter(l=>!lf||l.t==lf).map(l=>`<div class="log"><span class="mut">${new Date(l.d).toLocaleString('fr-FR')}</span> <span class="tag">${LT[l.t]||l.t}</span> <b>${e(l.by)}</b> ${e(l.x)}</div>`).join('')||'<p class="mut">Rien pour le moment.</p>'}`},
-tuto(){return `<h2>Tutoriels</h2>${S.cfg.tutos.map(t=>`<details class="card"><summary>${e(t.t)}</summary><p class="pre">${e(t.b)}</p></details>`).join('')||'<p class="mut">Aucun tutoriel pour le moment.</p>'}${can('set')?'<p class="note">Pour ajouter ou modifier un tutoriel : Réglages, section Tutoriels.</p>':''}`},
-set(){const c=S.cfg,h=c.hooks,H=(k,l)=>`<label>${l}<span class="row"><input id="h_${k}" value="${e(h[k])}" placeholder="https://discord.com/api/webhooks/..."><button type="button" class="ghost" style="margin:0" onclick="testHook('${k}')">Tester</button></span></label>`,
+tuto(){return `<h2>Tutoriels</h2>${S.cfg.tutos.map(t=>`<details class="card"><summary>${e(t.t)}</summary><div class="rich">${rich(t.b)}</div></details>`).join('')||'<p class="mut">Aucun tutoriel pour le moment.</p>'}${can('set')?'<p class="note">Pour ajouter ou modifier un tutoriel, avec images et vidéos : Réglages, section Tutoriels.</p>':''}`},
+set(){const c=S.cfg,h=c.hooks,H=(k,l)=>`<label>${l}<span class="row"><input id="h_${k}" value="${e(h[k])}" placeholder="https://discord.com/api/webhooks/..." autocomplete="off"><button type="button" class="ghost" style="margin:0" onclick="testHook('${k}')">Tester</button></span></label>`,
  sel=(k,l)=>`<label>${l}<select id="p_${k}">${c.ranks.map(r=>`<option${r==c.perm[k]?' selected':''}>${e(r)}</option>`).join('')}</select></label>`;
- return `<h2>Réglages</h2><form class="card" onsubmit="saveCfg(event)"><h3>Général</h3><label>Nom du site<input name="n" value="${e(c.name)}" required></label><label>Ping des comptes rendus (mention de rôle, laisser vide pour aucun)<input name="ping" value="${e(c.crPing)}"></label>
-<h3>Webhooks Discord</h3>${H('rc','Rapports d’entretien')}${H('acc','Candidatures acceptées')}${H('ref','Candidatures refusées')}${H('att','Candidatures en attente')}${H('forma','Rapports de formation')}${H('cr','Comptes rendus')}
+ return `<h2>Réglages</h2><form class="card" onsubmit="saveCfg(event)"><h3>Général</h3><label>Nom du site<input name="n" value="${e(c.name)}" required></label><label>Ping des comptes rendus (mention de rôle, laisser vide pour aucun)<input name="ping" value="${e(c.crPing)}"></label><label>Rôles que les membres ont le droit de mentionner dans les messages (IDs séparés par des espaces)<input name="proles" value="${e((c.pingRoles||[]).join(' '))}"></label><label>Page d’accueil : texte, images et vidéos (voir l’aide en bas de page)<textarea name="home" rows="8">${e(c.home||'')}</textarea></label>
+<h3>Webhooks Discord</h3><p class="mut">Les adresses sont masquées une fois enregistrées. Pour en changer une, colle la nouvelle adresse.</p>${H('rc','Rapports d’entretien')}${H('acc','Candidatures acceptées')}${H('ref','Candidatures refusées')}${H('att','Candidatures en attente')}${H('forma','Rapports de formation')}${H('cr','Comptes rendus')}
 <h3>Rangs et permissions</h3><label>Rangs, un par ligne, du plus bas au plus haut<textarea name="ranks" rows="6">${e(c.ranks.join('\n'))}</textarea></label>${sel('hg','Rang minimum pour tout voir, décider des candidatures et voir les logs')}${sel('pts','Rang minimum pour ajouter des points')}${sel('set','Rang minimum pour les Réglages et la gestion des comptes')}
 <h3>Questions de l’entretien</h3><label>Une par ligne. Une ligne qui commence par ## est un titre de section.<textarea name="rq" rows="10">${e(c.rq.join('\n'))}</textarea></label>
 <h3>Barème du compte rendu</h3><label>Une ligne par activité : principale ou secondaire | emoji | libellé | points par unité | recruteur (si réservé aux recruteurs)<textarea name="stats" rows="8">${e(c.stats.map(x=>[x.s=='sec'?'secondaire':'principale',x.e,x.l,x.p,x.rec?'recruteur':''].join(' | ')).join('\n'))}</textarea></label>
 <h3>Quiz</h3><label>Une ligne # Titre pour chaque quiz, puis une question par ligne : Question | réponse 1 ; réponse 2 ; réponse 3 | numéro de la bonne réponse<textarea name="quizzes" rows="10">${e(c.quizzes.map(z=>'# '+z.t+'\n'+z.q.map(q=>q[0]+' | '+q[1].join(' ; ')+' | '+(q[2]+1)).join('\n')).join('\n\n'))}</textarea></label>
-<h3>Tutoriels</h3><label>Une ligne # Titre, puis le texte. Un titre identique au nom d’une page (Recrutement, Comptes rendus, Profils, Quiz...) s’affiche aussi en haut de cette page.<textarea name="tutos" rows="10">${e(c.tutos.map(t=>'# '+t.t+'\n'+t.b).join('\n\n'))}</textarea></label>
-<button>Enregistrer les réglages</button></form>`}};
+<h3>Tutoriels</h3><label>Une ligne # Titre, puis le texte, avec images et vidéos possibles. Un titre identique au nom d’une page (Recrutement, Comptes rendus, Profils, Quiz, Accueil...) s’affiche aussi en haut de cette page.<textarea name="tutos" rows="12">${e(c.tutos.map(t=>'# '+t.t+'\n'+t.b).join('\n\n'))}</textarea></label>
+<button>Enregistrer les réglages</button></form>
+<div class="card"><h3>Médias</h3><p class="mut">Téléverse une image (6 Mo max) ou une vidéo mp4/webm (15 Mo max), puis copie sa ligne dans un tutoriel ou dans l’accueil. Les fichiers ne sont visibles que par les comptes connectés.</p><input type="file" id="mf" accept="image/png,image/jpeg,image/gif,image/webp,video/mp4,video/webm"><div class="acts"><button type="button" onclick="upMedia()">Téléverser</button></div>
+${(S.media||[]).map(m=>{const l=(/^(png|jpg|gif|webp)$/.test(m.ext)?'image':'video')+': /media/'+m.id+'.'+m.ext;return `<div class="log"><div class="top"><b>${e(m.name)}</b><button type="button" class="ghost" onclick="cp('${l}')">Copier la ligne</button><button type="button" class="ghost" onclick="delMedia('${m.id}')">Supprimer</button></div><code>${e(l)}</code></div>`}).join('')}</div>
+<div class="card"><h3>Aide : ajouter des médias</h3><p class="pre mut">## Un titre
+Une ligne de texte normale.
+image: /media/xxxxxxxxxxxxxxxx.png | légende facultative
+video: /media/xxxxxxxxxxxxxxxx.mp4
+video: https://www.youtube.com/watch?v=IDVIDEO
+image: https://exemple.com/photo.png
+lien: https://exemple.com | texte du lien</p><p class="mut">Seuls les liens https ou les fichiers téléversés ici sont acceptés.</p></div>`}};
 
 function render(){const a=$('#app');document.title=(S?S.cfg.name:'ADS')+' – Espace de gestion';
- if(!me){a.innerHTML=`<main class="login"><h1>Connexion</h1><p class="mut">Espace de gestion privé. Entre ton code personnel.</p><form onsubmit="login(event)"><label>Code d’accès<input id="code" type="password" autocomplete="off" required></label><button>Entrer</button><p id="err" class="bad"></p></form></main>`;return}
+ if(!me){a.innerHTML=`<main class="login"><div class="glass"><div class="logo big">❄</div><h1>Connexion</h1><p class="mut">Espace de gestion privé. Entre ton code personnel.</p><form onsubmit="login(event)"><label>Code d’accès<input id="code" type="password" autocomplete="current-password" required></label><button>Entrer</button><p id="err" class="bad"></p></form></div></main>`;return}
  if(show[page]&&!show[page]())page='dash';
- const nav=NAV.filter(n=>!show[n[0]]||show[n[0]]()).map(n=>`<button class="${n[0]==page?'on':''}" onclick="go('${n[0]}')">${n[1]}</button>`).join('');
- a.innerHTML=`<header><b>${e(S.cfg.name)}</b><nav>${nav}</nav><span class="mut">${e(me.name)}</span><button class="ghost" onclick="logout()">Quitter</button></header><main>${PAGES[page]()}</main>`;
+ const nav=NAV.filter(n=>!show[n[0]]||show[n[0]]()).map(n=>`<button class="${n[0]==page?'on':''}" onclick="go('${n[0]}')">${n[2]} ${n[1]}</button>`).join('');
+ a.innerHTML=`<header><div class="brand"><span class="logo">❄</span><b>${e(S.cfg.name)}</b></div><nav>${nav}</nav><div class="who"><span>${e(me.name)}</span><span class="tag rank">${e(me.rank)}</span><button class="ghost" onclick="logout()">Quitter</button></div></header><main>${PAGES[page]()}</main>`;
  const f=document.querySelector('form[oninput]');if(f)calc(f)}
 
 function calc(f){const d=new FormData(f);let t=0;S.cfg.stats.forEach((x,i)=>{if(d.has('s'+i))t+=(Number(d.get('s'+i))||0)*x.p});const op=Number(d.get('op'))||0,m=miss(myu());
@@ -105,14 +147,20 @@ function addU(ev){ev.preventDefault();const f=new FormData(ev.target);act('POST'
 function addP(ev,id){ev.preventDefault();const f=new FormData(ev.target);act('POST','users/'+id+'/points',{v:Number(f.get('v')),w:f.get('w')},'Points ajoutés')}
 function addCr(ev){ev.preventDefault();const f=new FormData(ev.target);act('POST','cr',{pseudo:f.get('pseudo'),did:f.get('did'),vals:S.cfg.stats.map((x,i)=>f.get('s'+i)||0),ot:f.get('ot'),op:f.get('op'),prob:f.get('prob'),amel:f.get('amel'),ping:f.get('ping'),shib:f.get('shib'),tt:f.get('tt')}).then(j=>{if(j)toast('Compte rendu envoyé : '+j.total+' points')})}
 async function grade(ev){ev.preventDefault();const f=new FormData(ev.target),z=S.cfg.quizzes.find(x=>x.id==qid),j=await api('POST','quiz',{id:qid,a:z.q.map((q,i)=>Number(f.get('q'+i)))});if(j)$('#res').textContent='Score : '+j.score+'/'+z.q.length+(j.score==z.q.length?'. Parfait.':'. Relis les tutoriels ou le règlement et réessaie.')}
-async function testHook(k){const url=$('#h_'+k).value.trim();if(!url){toast('Colle d’abord l’adresse du webhook');return}const j=await api('POST','hook-test',{url});if(j)toast(j.ok?'Message de test envoyé':'Discord a refusé cette adresse')}
+async function testHook(k){const url=$('#h_'+k).value.trim();if(!url){toast('Colle d’abord l’adresse du webhook');return}const j=await api('POST','hook-test',{k,url});if(j)toast(j.ok?'Message de test envoyé':'Discord a refusé cette adresse')}
 function saveCfg(ev){ev.preventDefault();const f=new FormData(ev.target);
  const lines=t=>String(t).split('\n').map(l=>l.trim()).filter(Boolean),cols=l=>l.split('|').map(x=>x.trim()),L=t=>t.split(';').map(o=>o.trim()).filter(Boolean),
  blocks=t=>{const o=[];let c=null;for(const l of String(t).split('\n')){if(l.startsWith('# ')){c={t:l.slice(2).trim(),l:[]};o.push(c)}else if(c&&l.trim())c.l.push(l.trim())}return o};
- act('PUT','config',{name:f.get('n'),crPing:f.get('ping'),hooks:Object.fromEntries(['rc','acc','ref','att','forma','cr'].map(k=>[k,$('#h_'+k).value.trim()])),
+ act('PUT','config',{name:f.get('n'),crPing:f.get('ping'),pingRoles:String(f.get('proles')).split(/\s+/).filter(Boolean),home:f.get('home'),hooks:Object.fromEntries(['rc','acc','ref','att','forma','cr'].map(k=>[k,$('#h_'+k).value.trim()])),
   ranks:lines(f.get('ranks')),perm:{hg:$('#p_hg').value,pts:$('#p_pts').value,set:$('#p_set').value},rq:lines(f.get('rq')),
   stats:lines(f.get('stats')).map(cols).map(p=>({s:/^sec/i.test(p[0])?'sec':'main',e:p[1]||'',l:p[2]||'',p:Number(String(p[3]).replace(',','.'))||0,rec:/rec|oui/i.test(p[4]||'')})),
   quizzes:blocks(f.get('quizzes')).map(z=>({t:z.t,q:z.l.map(cols).map(p=>[p[0],L(p[1]||''),(parseInt(p[2])||1)-1])})),
   tutos:blocks(f.get('tutos')).map(z=>({t:z.t,b:z.l.join('\n')}))},'Réglages enregistrés')}
-(async()=>{if(CODE&&!(await api('GET','state')))CODE=null;render()})();
+function cp(t){navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>toast('Copié'),()=>toast('Copie impossible'))}
+async function bulk(ev){ev.preventDefault();const f=new FormData(ev.target),j=await act('POST','points-bulk',{v:Number(f.get('v')),w:f.get('w'),ranks:f.getAll('rk'),ids:f.getAll('id')});if(j)toast(j.n+' membre(s) ont reçu les points')}
+async function upMedia(){const f=$('#mf').files[0];if(!f){toast('Choisis un fichier');return}if(f.size>15e6){toast('Fichier trop lourd (15 Mo maximum)');return}
+ const d=await new Promise((ok,ko)=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]);r.onerror=ko;r.readAsDataURL(f)});
+ const j=await act('POST','media',{name:f.name,data:d});if(j)toast('Média ajouté : copie sa ligne dans la liste')}
+function delMedia(id){conf(id,()=>act('DELETE','media/'+id))}
+(async()=>{await api('GET','state',null,1);render()})();
 </script></body></html>
