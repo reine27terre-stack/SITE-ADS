@@ -51,9 +51,9 @@ const $=s=>document.querySelector(s),e=s=>String(s??'').replace(/[&<>"']/g,c=>'&
 const fd=s=>{const m=/^(\d{4})-(\d\d)-(\d\d)$/.exec(s||'');return m?m[3]+'/'+m[2]+'/'+m[1]:(s||'')};
 const VL={attente:'En attente',ok:'Acceptée',no:'Refusée'},LT={pts:'Points',ent:'Entretiens',dec:'Décisions',forma:'Formations',cr:'Comptes rendus',cpt:'Comptes',quiz:'Quiz',cfg:'Réglages'};
 const NAV=[['dash','Accueil','🏠'],['rc','Recrutement','📋'],['team','Profils','👥'],['cr','Comptes rendus','📊'],['quiz','Quiz','🎓'],['logs','Logs','🧾'],['tuto','Tutoriels','📖'],['set','Réglages','⚙️']];
-let S=null,me=null,page='dash',rcf='',lf='',pend=null,fm=null,qid=null,flash=null;
+let S=null,me=null,page='dash',rcf='',lf='',pend=null,fm=null,qid=null,flash=null,pollT=null;
 const can=k=>me.p[k],tot=u=>r2(u.pts.reduce((s,p)=>s+p.v,0)),miss=u=>r2(u.pts.filter(p=>p.t=='mission'&&!p.rep).reduce((s,p)=>s+p.v,0)),myu=()=>S.users.find(u=>u.id==me.id);
-const show={rc:()=>me.rec||can('hg'),logs:()=>can('hg'),set:()=>can('set')};
+const show={rc:()=>me.rec||can('hg')||can('dec'),logs:()=>can('hg'),set:()=>can('set')};
 const warns=()=>(S.warn||[]).map(w=>`<div class="note">⚠️ ${e(w)}</div><p></p>`).join('');
 const okU=u=>/^(\/media\/[0-9a-f]{16}\.\w+|https:\/\/[^\s"'<>]+)$/.test(u);
 const yt=u=>{const m=/^https:\/\/(?:www\.)?(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([\w-]{11})/.exec(u);return m&&m[1]};
@@ -67,8 +67,8 @@ function rich(t){return String(t||'').split('\n').map(l=>{l=l.trim();if(!l)retur
 const tut=l=>{const t=S.cfg.tutos.find(x=>x.t.toLowerCase()==l.toLowerCase());return t?`<details class="card"><summary>Tutoriel : ${e(t.t)}</summary><div class="rich">${rich(t.b)}</div></details>`:''};
 async function api(m,u,b,q){try{const r=await fetch('/api/'+u,{method:m,credentials:'same-origin',headers:{'Content-Type':'application/json','x-ads':'1'},body:b?JSON.stringify(b):undefined}),j=await r.json();if(!r.ok){if(!q)toast(j.error||'Erreur');return null}if(j.S){S=j.S;me=j.me}return j}catch(x){if(!q)toast('Serveur injoignable');return null}}
 function toast(m){const t=$('#t');t.textContent=m;t.className='on';clearTimeout(toast.k);toast.k=setTimeout(()=>t.className='',4000)}
-async function login(ev){ev.preventDefault();const j=await api('POST','login',{code:$('#code').value.trim()},1);if(!j){$('#err').textContent='Code inconnu ou trop d’essais.';return}render()}
-async function logout(){await api('POST','logout',{},1);S=null;me=null;flash=null;render()}
+async function login(ev){ev.preventDefault();const j=await api('POST','login',{code:$('#code').value.trim()},1);if(!j){$('#err').textContent='Code inconnu ou trop d’essais.';return}render();schedulePoll()}
+async function logout(){clearTimeout(pollT);await api('POST','logout',{},1);S=null;me=null;flash=null;render()}
 function go(p){page=p;fm=null;qid=null;flash=null;render()}
 async function act(m,u,b,ok){const j=await api(m,u,b);if(j){if(j.newCode)flash=j.newCode;render();if(ok)toast(ok)}return j}
 
@@ -76,7 +76,7 @@ const rcRow=r=>`<div class="card"><div class="top"><b>${e(r.cand)}</b><span clas
 <p class="mut">Le ${fd(r.date)}. Réalisé par ${e(r.by)}, supervisé par ${e(r.sup||'-')}.</p>
 <details><summary>Voir l’entretien</summary>${(r.a||[]).map(x=>x[0]=='##'?`<h3>${e(x[1])}</h3>`:`<p><b>${e(x[0])}</b><br>${e(x[1]||'-')}</p>`).join('')}</details>
 ${r.tr?`<p class="mut">Formé par ${e(r.trBy)}. ${e(r.trNote||'')}</p>`:''}
-<div class="acts">${can('hg')?`<button onclick="verd('${r.id}','ok')">Accepter</button><button class="ghost" onclick="verd('${r.id}','attente')">Mettre en attente</button><button class="ghost" onclick="verd('${r.id}','no')">Refuser</button><button class="ghost" onclick="delRc('${r.id}')">Supprimer</button>`:''}${r.v=='ok'&&!r.tr?`<button class="ghost" onclick="fm='${r.id}';render()">Formation terminée</button>`:''}</div>
+<div class="acts">${can('hg')||can('dec')?`<button onclick="verd('${r.id}','ok')">Accepter</button><button class="ghost" onclick="verd('${r.id}','attente')">Mettre en attente</button><button class="ghost" onclick="verd('${r.id}','no')">Refuser</button>`:''}${can('hg')?`<button class="ghost" onclick="delRc('${r.id}')">Supprimer</button>`:''}${r.v=='ok'&&!r.tr?`<button class="ghost" onclick="fm='${r.id}';render()">Formation terminée</button>`:''}</div>
 ${fm==r.id?`<form onsubmit="doTrain(event,'${r.id}')"><label>Remarques sur la formation<textarea name="n" rows="2"></textarea></label><button>Envoyer le rapport de formation</button></form>`:''}</div>`;
 
 const uCard=u=>`<div class="card"><div class="top"><b>${e(u.name)}</b><span class="tag rank">${e(u.rank)}</span>${u.rec?'<span class="tag">Recruteur</span>':''}<span class="tag">${tot(u)} pts</span></div>
@@ -90,8 +90,8 @@ const PAGES={
 dash(){const w=S.rcs.filter(r=>r.v=='attente').length,f=S.rcs.filter(r=>r.v=='ok'&&!r.tr);
  return `${warns()}<div class="hero"><div><span class="mut">Bienvenue</span><h1>${e(me.name)}</h1><p class="mut">${e(S.cfg.name)}</p></div><div class="pts"><b>${tot(myu())}</b><span>points</span></div></div>
 ${S.cfg.home?`<div class="card rich">${rich(S.cfg.home)}</div>`:''}${tut('Accueil')}
-<div class="stats">${can('hg')?`<div><i>📥</i><b>${w}</b><span>candidatures en attente</span></div><div><i>🎓</i><b>${f.length}</b><span>en attente de formation</span></div>`:''}<div><i>📝</i><b>${S.crs.length}</b><span>comptes rendus</span></div><div><i>🏅</i><b>${e(me.rank)}</b><span>ton rang</span></div></div>
-${can('hg')&&f.length?`<div class="note">En attente de formation : ${f.map(r=>e(r.cand)).join(', ')}</div><p></p>`:''}<p class="note">Le compte rendu est obligatoire chaque samedi avant 22h00, sous peine de sanction.${S.cfg.reset&&S.cfg.reset.on?' Les points du profil repartent à 0 chaque dimanche à 00h00 (fin du samedi, heure de '+e(S.cfg.reset.tz)+').':''}</p>`},
+<div class="stats">${can('hg')||can('dec')?`<div><i>📥</i><b>${w}</b><span>candidatures en attente</span></div><div><i>🎓</i><b>${f.length}</b><span>en attente de formation</span></div>`:''}<div><i>📝</i><b>${S.crs.length}</b><span>comptes rendus</span></div><div><i>🏅</i><b>${e(me.rank)}</b><span>ton rang</span></div></div>
+${(can('hg')||can('dec'))&&f.length?`<div class="note">En attente de formation : ${f.map(r=>e(r.cand)).join(', ')}</div><p></p>`:''}<p class="note">Le compte rendu est obligatoire chaque samedi avant 22h00, sous peine de sanction.${S.cfg.reset&&S.cfg.reset.on?' Les points du profil repartent à 0 chaque dimanche à 00h00 (fin du samedi, heure de '+e(S.cfg.reset.tz)+').':''}</p>`},
 rc(){const today=new Date().toISOString().slice(0,10);let i=0;
  const qs=S.cfg.rq.map((l,j)=>l.startsWith('##')?`<h3>${e(l.replace(/^#+\s*/,''))}</h3>`:`<label>Question ${++i} : ${e(l)}<textarea name="a${j}" rows="2" placeholder="Réponse"></textarea></label>`).join('');
  return `<h2>Recrutement</h2>${tut('Recrutement')}<form class="card" onsubmit="addRc(event)"><h3>Nouvel entretien</h3><div class="row"><label>Candidat (pseudo)<input name="cand" required></label><label>ID Discord<input name="did" inputmode="numeric"></label></div><div class="row"><label>Date de l’entretien<input type="date" name="date" value="${today}"></label><label>Réalisé par<input name="by" value="${e(me.name)}"></label></div><label>Supervisé par<input name="sup"></label>${qs}<button>Enregistrer et envoyer le rapport d’entretien</button></form>
@@ -108,11 +108,12 @@ quiz(){const u=myu(),z=S.cfg.quizzes.find(x=>x.id==qid);
 logs(){return `<h2>Logs</h2><div class="acts">${[['','Tout'],...Object.entries(LT)].map(f=>`<button class="${lf==f[0]?'':'ghost'}" onclick="lf='${f[0]}';render()">${f[1]}</button>`).join('')}</div><p></p>${S.logs.filter(l=>!lf||l.t==lf).map(l=>`<div class="log"><span class="mut">${new Date(l.d).toLocaleString('fr-FR')}</span> <span class="tag">${LT[l.t]||l.t}</span> <b>${e(l.by)}</b> ${e(l.x)}</div>`).join('')||'<p class="mut">Rien pour le moment.</p>'}`},
 tuto(){return `<h2>Tutoriels</h2>${S.cfg.tutos.map(t=>`<details class="card"><summary>${e(t.t)}</summary><div class="rich">${rich(t.b)}</div></details>`).join('')||'<p class="mut">Aucun tutoriel pour le moment.</p>'}${can('set')?'<p class="note">Pour ajouter ou modifier un tutoriel, avec images et vidéos : Réglages, section Tutoriels.</p>':''}`},
 set(){const c=S.cfg,h=c.hooks,H=(k,l)=>`<label>${l}<span class="row"><input id="h_${k}" value="${e(h[k])}" placeholder="https://discord.com/api/webhooks/..." autocomplete="off"><button type="button" class="ghost" style="margin:0" onclick="testHook('${k}')">Tester</button></span></label>`,
- sel=(k,l)=>`<label>${l}<select id="p_${k}">${c.ranks.map(r=>`<option${r==c.perm[k]?' selected':''}>${e(r)}</option>`).join('')}</select></label>`;
+ sel=(k,l)=>`<label>${l}<select id="p_${k}">${c.ranks.map(r=>`<option${r==c.perm[k]?' selected':''}>${e(r)}</option>`).join('')}</select></label>`,
+ selp=(k,l)=>`<label>${l}<select id="p2_${k}">${c.ranks.map(r=>`<option${r==(c.perm||{})[k]?' selected':''}>${e(r)}</option>`).join('')}</select></label>`;
  return `<h2>Réglages</h2>${warns()}<form class="card" onsubmit="saveCfg(event)"><h3>Général</h3><label>Nom du site<input name="n" value="${e(c.name)}" required></label><label>Ping des comptes rendus (mention de rôle, laisser vide pour aucun)<input name="ping" value="${e(c.crPing)}"></label><label>Rôles que les membres ont le droit de mentionner dans les messages (IDs séparés par des espaces)<input name="proles" value="${e((c.pingRoles||[]).join(' '))}"></label><label>Page d’accueil : texte, images et vidéos (voir l’aide en bas de page)<textarea name="home" rows="8">${e(c.home||'')}</textarea></label>
 <h3>Webhooks Discord</h3><p class="mut">Les adresses sont masquées une fois enregistrées. Pour en changer une, colle la nouvelle adresse.</p>${H('rc','Rapports d’entretien')}${H('acc','Candidatures acceptées')}${H('ref','Candidatures refusées')}${H('att','Candidatures en attente')}${H('forma','Rapports de formation')}${H('cr','Comptes rendus')}${H('bak','Sauvegarde automatique quotidienne (salon privé réservé aux HG)')}
 <h3>Remise à zéro hebdomadaire des points</h3><label class="opt"><input type="checkbox" name="rson"${c.reset&&c.reset.on?' checked':''}>Remettre les points des profils à 0 chaque dimanche à 00h00 (fin du samedi)</label><label>Fuseau horaire<input name="rstz" value="${e((c.reset||{}).tz||'Europe/Paris')}"></label>
-<h3>Rangs et permissions</h3><label>Rangs, un par ligne, du plus bas au plus haut<textarea name="ranks" rows="6">${e(c.ranks.join('\n'))}</textarea></label>${sel('hg','Rang minimum pour tout voir, décider des candidatures et voir les logs')}${sel('pts','Rang minimum pour ajouter des points')}${sel('set','Rang minimum pour les Réglages et la gestion des comptes')}
+<h3>Rangs et permissions</h3><label>Rangs, un par ligne, du plus bas au plus haut<textarea name="ranks" rows="6">${e(c.ranks.join('\n'))}</textarea></label>${sel('hg','Rang minimum pour tout voir et voir les logs')}${selp('dec','Rang minimum pour accepter, refuser ou mettre en attente une candidature')}${sel('pts','Rang minimum pour ajouter des points')}${sel('set','Rang minimum pour les Réglages et la gestion des comptes')}
 <h3>Questions de l’entretien</h3><label>Une par ligne. Une ligne qui commence par ## est un titre de section.<textarea name="rq" rows="10">${e(c.rq.join('\n'))}</textarea></label>
 <h3>Barème du compte rendu</h3><label>Une ligne par activité : principale ou secondaire | emoji | libellé | points par unité | recruteur (si réservé aux recruteurs)<textarea name="stats" rows="8">${e(c.stats.map(x=>[x.s=='sec'?'secondaire':'principale',x.e,x.l,x.p,x.rec?'recruteur':''].join(' | ')).join('\n'))}</textarea></label>
 <h3>Quiz</h3><label>Une ligne # Titre pour chaque quiz, puis une question par ligne : Question | réponse 1 ; réponse 2 ; réponse 3 | numéro de la bonne réponse<textarea name="quizzes" rows="10">${e(c.quizzes.map(z=>'# '+z.t+'\n'+z.q.map(q=>q[0]+' | '+q[1].join(' ; ')+' | '+(q[2]+1)).join('\n')).join('\n\n'))}</textarea></label>
@@ -157,7 +158,7 @@ function saveCfg(ev){ev.preventDefault();const f=new FormData(ev.target);
  const lines=t=>String(t).split('\n').map(l=>l.trim()).filter(Boolean),cols=l=>l.split('|').map(x=>x.trim()),L=t=>t.split(';').map(o=>o.trim()).filter(Boolean),
  blocks=t=>{const o=[];let c=null;for(const l of String(t).split('\n')){if(l.startsWith('# ')){c={t:l.slice(2).trim(),l:[]};o.push(c)}else if(c&&l.trim())c.l.push(l.trim())}return o};
  act('PUT','config',{name:f.get('n'),crPing:f.get('ping'),pingRoles:String(f.get('proles')).split(/\s+/).filter(Boolean),home:f.get('home'),reset:{on:!!f.get('rson'),tz:f.get('rstz')},hooks:Object.fromEntries(['rc','acc','ref','att','forma','cr','bak'].map(k=>[k,$('#h_'+k).value.trim()])),
-  ranks:lines(f.get('ranks')),perm:{hg:$('#p_hg').value,pts:$('#p_pts').value,set:$('#p_set').value},rq:lines(f.get('rq')),
+  ranks:lines(f.get('ranks')),perm:{hg:$('#p_hg').value,dec:$('#p2_dec').value,pts:$('#p_pts').value,set:$('#p_set').value},rq:lines(f.get('rq')),
   stats:lines(f.get('stats')).map(cols).map(p=>({s:/^sec/i.test(p[0])?'sec':'main',e:p[1]||'',l:p[2]||'',p:Number(String(p[3]).replace(',','.'))||0,rec:/rec|oui/i.test(p[4]||'')})),
   quizzes:blocks(f.get('quizzes')).map(z=>({t:z.t,q:z.l.map(cols).map(p=>[p[0],L(p[1]||''),(parseInt(p[2])||1)-1])})),
   tutos:blocks(f.get('tutos')).map(z=>({t:z.t,b:z.l.join('\n')}))},'Réglages enregistrés')}
@@ -170,5 +171,10 @@ async function upMedia(){const f=$('#mf').files[0];if(!f){toast('Choisis un fich
  const d=await new Promise((ok,ko)=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]);r.onerror=ko;r.readAsDataURL(f)});
  const j=await act('POST','media',{name:f.name,data:d});if(j)toast('Média ajouté : copie sa ligne dans la liste')}
 function delMedia(id){conf(id,()=>act('DELETE','media/'+id))}
-(async()=>{await api('GET','state',null,1);render()})();
+function schedulePoll(){clearTimeout(pollT);if(!me)return;pollT=setTimeout(poll,15000)}
+async function poll(){if(!me)return;const act=document.activeElement,typing=act&&/INPUT|TEXTAREA|SELECT/.test(act.tagName);
+ if(document.hidden||typing||page=='set'||(page=='cr'&&act&&act.closest('form'))||(page=='quiz'&&qid)){schedulePoll();return}
+ const before=JSON.stringify(S);await api('GET','state',null,1);if(S&&JSON.stringify(S)!==before)render();schedulePoll()}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&me)poll()});
+(async()=>{await api('GET','state',null,1);render();schedulePoll()})();
 </script></body></html>
