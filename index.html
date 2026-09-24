@@ -65,7 +65,8 @@ function rich(t){return String(t||'').split('\n').map(l=>{l=l.trim();if(!l)retur
   const y=yt(u);return`<figure>${y?`<iframe src="https://www.youtube-nocookie.com/embed/${y}" allowfullscreen loading="lazy" referrerpolicy="no-referrer"></iframe>`:`<video controls preload="metadata" src="${e(u)}"></video>`}${cap}</figure>`}
  if(l.startsWith('## '))return`<h3>${e(l.slice(3))}</h3>`;return`<p>${e(l)}</p>`}).join('')}
 const mt=v=>!q||String(v??'').toLowerCase().includes(q.toLowerCase());
-const SB=(ph)=>`<div class="card" style="padding:10px 14px"><input type="search" value="${e(q)}" placeholder="${e(ph)}" oninput="q=this.value;render()"></div>`;
+function setQ(el){const pos=el.selectionStart;q=el.value;render();const ne=$('input[data-search]');if(ne){ne.focus();try{ne.setSelectionRange(pos,pos)}catch(x){}}}
+const SB=(ph)=>`<div class="card" style="padding:10px 14px"><input type="search" data-search value="${e(q)}" placeholder="${e(ph)}" oninput="setQ(this)"></div>`;
 const tut=l=>{const t=S.cfg.tutos.find(x=>x.t.toLowerCase()==l.toLowerCase());return t?`<details class="card"><summary>Tutoriel : ${e(t.t)}</summary><div class="rich">${rich(t.b)}</div></details>`:''};
 async function api(m,u,b,q){try{const r=await fetch('/api/'+u,{method:m,credentials:'same-origin',headers:{'Content-Type':'application/json','x-ads':'1'},body:b?JSON.stringify(b):undefined}),j=await r.json();if(!r.ok){if(!q)toast(j.error||'Erreur');return null}if(j.S){S=j.S;me=j.me}return j}catch(x){if(!q)toast('Serveur injoignable');return null}}
 function toast(m){const t=$('#t');t.textContent=m;t.className='on';clearTimeout(toast.k);toast.k=setTimeout(()=>t.className='',4000)}

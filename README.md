@@ -21,8 +21,14 @@ Sur GitHub : « Add file » > « Upload files », glisse `server.js` et `index.h
 - En-têtes de sécurité : CSP, X-Frame-Options, HSTS, Referrer-Policy, etc. Journal de sécurité (connexions, échecs) dans la page Logs.
 
 ## Rangs et codes
-Rangs par défaut (modifiables) : Gestionnaire, Senior, Vétéran, HG, Bras droit, Fondateur. Codes préfixés par rang (SE-..., VE-..., HG-...).
-Permissions réglables : tout voir et décider, ajouter des points (à un membre, à un rang entier ou à une sélection), Réglages et comptes.
+Rangs par défaut, du plus bas au plus haut : Gestionnaire, Senior, Vétéran, HG, Bras droit, Fondateur. Codes préfixés par rang (SE-..., VE-..., HG-...).
+Permissions réglables séparément dans Réglages : tout voir et voir les logs (HG par défaut), accepter/refuser/mettre en attente une candidature (Senior par défaut, donc Senior et tous les rangs au-dessus), ajouter des points (à un membre, à un rang entier ou à une sélection), Réglages et comptes.
+
+## Recherche
+Une barre de recherche filtre la liste en direct sur Recrutement, Profils, Comptes rendus, Quiz, Logs et Tutoriels. Elle se vide en changeant de page.
+
+## Actualisation automatique
+La page se met à jour toute seule (environ toutes les 15 secondes, et dès qu'on revient sur l'onglet) pour montrer les décisions, points ou candidatures des autres. Elle ne touche jamais un formulaire en train d'être rempli : le compte rendu et les Réglages ne se rafraîchissent pas pendant la saisie.
 
 ## Messages Discord
 Tout part en embed. Une mention tapée dans un champ (`<@id>` dans le pseudo, par exemple) s'affiche dans l'embed ET notifie la personne (la mention est aussi placée dans le message, seul endroit où Discord notifie).
@@ -31,6 +37,9 @@ Tout part en embed. Une mention tapée dans un champ (`<@id>` dans le pseudo, pa
 Réglages > Médias : téléverse une image ou une vidéo, copie sa ligne (`image: /media/...`) dans l'accueil ou un tutoriel. Liens https et vidéos YouTube acceptés aussi.
 
 ## Ne pas perdre les données
+- **Ce n'est presque jamais le fichier HTML qui efface les données.** Mettre à jour `server.js` ou `index.html` redémarre le site (c'est normal). Si le disque persistant (Volume) n'est pas bien branché sur `/data`, CE redémarrage-là repart de zéro — et ça peut arriver à n'importe quelle mise à jour, pas seulement celle-ci. Vérifie donc en premier, sur Railway : onglet Volumes du service, un volume existe et son « mount path » est bien `/data`, et la variable `DATA_DIR` vaut `/data`.
+- **Filet de sécurité intégré** : si le fichier de données n'est plus là au démarrage, le site ne repart plus jamais vide en silence. Il restaure automatiquement la dernière sauvegarde trouvée sur le disque, et l'affiche en avertissement sur l'accueil pour que ça ne passe pas inaperçu.
+- **Variable `EXPECT_DATA=1`** : à ajouter dès que le site contient de vrais profils. Si le disque est perdu et qu'aucune sauvegarde n'est trouvée, le serveur refuse alors de démarrer plutôt que de créer un site vide — Railway affichera une erreur de déploiement, c'est voulu : mieux vaut un site en panne visible qu'un site vide qui a l'air normal.
 - **Le point essentiel** : un volume (disque persistant) monté sur `/data` + la variable `DATA_DIR=/data`. Sans lui, l'hébergeur efface tout à chaque redémarrage. Si le site ne détecte pas de disque persistant, les comptes ayant accès aux Réglages voient un bandeau d'avertissement (si le disque est bon malgré l'avertissement, ajoute la variable `DATA_PERSISTENT=1`).
 - **Variable `SECRET`** : à définir sur l'hébergeur. Sans elle, une sauvegarde ne peut pas être relue sur un nouveau serveur (les codes sont liés au secret).
 - **Copies automatiques** : copie de secours à chaque enregistrement (`db.json.bak`), une sauvegarde par jour pendant 14 jours (`data/backups/`) et une copie avant chaque remise à zéro ou restauration.
