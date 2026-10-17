@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Gestion Sécurité – Espace de gestion</title>
+<title>GSS – Espace de gestion</title>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#090d16;--sidebar:rgba(13,20,36,.88);--card:rgba(18,29,51,.68);--hdr:rgba(13,20,36,.85);--ink:#f1f7fc;--mut:#94a8be;--line:rgba(148,163,184,.14);--acc:#38bdf8;--acc2:#6366f1;--fg:#ffffff;--warn:#fbbf24;--bad:#f87171;--ok:#34d399;--in:rgba(10,16,30,.75);--sh:0 12px 32px rgba(0,0,0,.32)}
@@ -190,7 +190,7 @@ video: https://www.youtube.com/watch?v=IDVIDEO
 image: https://exemple.com/photo.png
 lien: https://exemple.com | texte du lien</p><p class="mut">Seuls les liens https ou les fichiers téléversés ici sont acceptés.</p></div>`}};
 
-function render(){const a=$('#app');document.title=(S?S.cfg.name:'Gestion Sécurité')+' – Espace de gestion';
+function render(){const a=$('#app');document.title=(S?S.cfg.name:'GSS')+' – Espace de gestion';
  if(!me){a.innerHTML=`<main class="login"><div class="glass"><div class="logo big">🛡️</div><h1>Connexion</h1><p class="mut">Espace de gestion privé. Entre ton code personnel.</p><form onsubmit="login(event)"><label>Code d’accès<input id="code" type="password" autocomplete="current-password" required></label><button>Entrer</button><p id="err" class="bad"></p></form></div></main>`;return}
  if(show[page]&&!show[page]())page='dash';
  const nav=NAV.filter(n=>!show[n[0]]||show[n[0]]()).map(n=>`<button class="${n[0]==page?'on':''}" onclick="go('${n[0]}')"><span class="nav-ic">${n[2]}</span><span>${n[1]}</span></button>`).join('');

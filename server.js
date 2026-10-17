@@ -1,4 +1,4 @@
-// Gestion Sécurité – serveur de gestion Discord. Node 18+, aucune dépendance.
+// GSS – serveur de gestion Discord. Node 18+, aucune dépendance.
 const http = require('http'), fs = require('fs'), path = require('path'), crypto = require('crypto');
 const PORT = process.env.PORT || 3000, DIR = process.env.DATA_DIR || path.join(__dirname, 'data'), FILE = path.join(DIR, 'db.json');
 const rnd = n => crypto.randomBytes(n).toString('hex'), T = (x, n = 300) => String(x ?? '').trim().slice(0, n), N = (x, m = 1e9) => { x = Number(x); return isFinite(x) ? Math.max(-m, Math.min(m, x)) : 0 }, r2 = x => Math.round(x * 100) / 100;
@@ -9,7 +9,7 @@ const CSP = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 's
 
 // ---------- Valeurs par défaut (tout est modifiable ensuite dans Réglages) ----------
 const DR = ["Test", "Owner", "Confirmé", "Senior", "Certifié", "Chef", "Bras Droit", "Gérant", "Fondateur"];
-const DRQ = ["## Questions générales :", "Demander au candidat de se présenter rapidement (âge, motivations, loisirs)", "Qu’est-ce que la gestion ADS selon toi ?", "Quelles qualités te semblent indispensables pour occuper le poste de gestion Sécurité ?", "Qu’est-ce que tu pourrais apporter de plus qu’un autre candidat ?", "As-tu de l’expérience sur les réseaux sociaux (poste-t-il des TikTok, vidéos YouTube ou a-t-il de l’expérience en montage vidéo) ?", "As-tu de l’expérience sur discord (Gestion, Staff..) ?", "As-tu des conflits avec des owners ou des hauts staffs sur Shibuya ?", "Combien de temps penses-tu rester en gestion Sécurité ?", "As-tu déjà effectué de la modération ?", "As-tu de l’expérience en tant que grabbeur ?", "As-tu de l’expérience en tant que jaileur ?", "## Questions de mise en situation", "Tu dois poster un TikTok aujourd’hui mais tu manques d’idées. Que fais-tu ?", "Tu rencontres un membre qui t’insulte en vocal, que fais-tu ?", "Si tu es pris(e), quels sont tes objectifs au sein de la Gestion Sécurité ?", "Es-tu en possession d’un ordinateur ?", "Un membre effectue une action étant un motif de ban, que fais-tu ?", "Tu as un conflit avec un haut staff ou un autre gestion, que fais-tu ?"];
+const DRQ = ["## Questions générales :", "Demander au candidat de se présenter rapidement (âge, motivations, loisirs)", "Qu’est-ce que la gestion GSS selon toi ?", "Quelles qualités te semblent indispensables pour occuper le poste de gestion Sécurité ?", "Qu’est-ce que tu pourrais apporter de plus qu’un autre candidat ?", "As-tu de l’expérience sur les réseaux sociaux (poste-t-il des TikTok, vidéos YouTube ou a-t-il de l’expérience en montage vidéo) ?", "As-tu de l’expérience sur discord (Gestion, Staff..) ?", "As-tu des conflits avec des owners ou des hauts staffs sur Shibuya ?", "Combien de temps penses-tu rester en gestion Sécurité ?", "As-tu déjà effectué de la modération ?", "As-tu de l’expérience en tant que grabbeur ?", "As-tu de l’expérience en tant que jaileur ?", "## Questions de mise en situation", "Tu dois poster un TikTok aujourd’hui mais tu manques d’idées. Que fais-tu ?", "Tu rencontres un membre qui t’insulte en vocal, que fais-tu ?", "Si tu es pris(e), quels sont tes objectifs au sein de la Gestion Sécurité ?", "Es-tu en possession d’un ordinateur ?", "Un membre effectue une action étant un motif de ban, que fais-tu ?", "Tu as un conflit avec un haut staff ou un autre gestion, que fais-tu ?"];
 // Barème officiel Gestion Sécurité : points par unité (1000 vues = 10 points, soit 0,01 par vue).
 const DST = [{ s: 'main', e: '<:emoji_113:1518005433590354072>', l: 'Nombre de vidéos tiktok réalisées', p: 5 }, { s: 'main', e: '<:emoji_114:1518005438694559785>', l: 'Nombre de tweet réalisées', p: 5 }, { s: 'main', e: '👀', l: 'Nombre de vues totales réalisées', p: 0.01 }, { s: 'main', e: '📝', l: 'Nombre de commentaires réalisées', p: 3 }, { s: 'main', e: '<:blurpleshield:1400686608268922880>', l: 'Nombre de jail réalisés', p: 6 }, { s: 'main', e: '<:blurpleshield:1400686608268922880>', l: 'Nombre de jail top 5 réalisés', p: 10 }, { s: 'main', e: '📈', l: 'Nombre stat-modération réalisés', p: 3 }, { s: 'main', e: '👥', l: 'Nombre de rank / dérank / staff réalisés', p: 3 }, { s: 'main', e: '💷', l: 'Nombre de contributeurs trouvés', p: 15 }, { s: 'main', e: '💷', l: 'Nombre de pub contri réalisées', p: 5 }, { s: 'sec', e: '👀', l: 'Nombre de grab bataillon réalisés', p: 5 }, { s: 'sec', e: '👀', l: 'Nombre de grab RC réalisés', p: 10 }, { s: 'sec', e: '📶', l: 'Nombre d’entretiens réalisés', p: 5, rec: 1 }, { s: 'sec', e: '📝', l: 'Nombre de formations réalisées', p: 10, rec: 1 }];
 const BQ = { id: 'bareme-des-points', t: 'Barème des points', q: [["Combien de points rapportent 1000 vues ?", ["5 points", "10 points", "15 points"], 1], ["Combien de points rapporte un grab RC ?", ["5 points", "10 points", "15 points"], 1], ["Combien de points rapporte une contri ?", ["10 points", "15 points", "20 points"], 1], ["Combien de points rapporte une formation ?", ["5 points", "10 points", "15 points"], 1], ["Où les stats doivent-elles être prouvées ?", ["Dans le serveur « Stats Gestion Sécurité » et les channels prévus", "Nulle part", "En message privé"], 0]] };
@@ -61,7 +61,8 @@ function wk(tz, t = new Date()) {
 }
 function norm(d) {
   const c = d.cfg = d.cfg || {};
-  c.name = c.name || 'Gestion Sécurité'; c.ranks = c.ranks || DR.slice();
+  if (!c.name || c.name === 'ADS' || c.name === 'Gestion ADS' || c.name === 'Gestion Sécurité') c.name = 'GSS';
+  c.ranks = c.ranks || DR.slice();
   if (!c.ranks.includes('Fondateur')) c.ranks.push('Fondateur');
   c.perm = Object.assign({ hg: 'Chef', dec: c.ranks[2] || c.ranks[0], pts: 'Bras Droit', set: 'Bras Droit' }, c.perm);
   c.hooks = Object.assign({ rc: '', acc: '', ref: '', att: '', forma: '', cr: '', bak: '', base: '' }, c.hooks);
@@ -70,7 +71,9 @@ function norm(d) {
   c.rankThreads = c.rankThreads || {};
   c.crPing = c.crPing ?? '<@&1538282326377893889>'; c.quizzes = c.quizzes || DQZ; c.tutos = c.tutos || DTU;
   if ((c.ver || 0) < 2) { c.rq = DRQ; c.stats = DST; if (!c.quizzes.some(z => z.id == BQ.id)) c.quizzes.push(BQ); c.ver = 2 }
-  c.rq = c.rq || DRQ; c.stats = c.stats || DST; c.home = c.home ?? DHOME; c.pingRoles = c.pingRoles || ['1538282326377893889']; c.reset = Object.assign({ on: true, tz: 'Europe/Paris' }, c.reset); d.lastReset = d.lastReset || wk(c.reset.tz);
+  c.rq = c.rq || DRQ;
+  if (Array.isArray(c.rq)) c.rq = c.rq.map(q => q.replace(/\bADS\b/g, 'GSS'));
+  c.stats = c.stats || DST; c.home = c.home ?? DHOME; c.pingRoles = c.pingRoles || ['1538282326377893889']; c.reset = Object.assign({ on: true, tz: 'Europe/Paris' }, c.reset); d.lastReset = d.lastReset || wk(c.reset.tz);
   d.users = d.users || []; for (const h of c.hg || []) d.users.push({ id: h.id, name: h.name, code: h.code, rank: c.ranks[c.ranks.length - 1], rec: true });
   delete c.hg; delete c.qs; delete c.quiz; delete c.admin;
   for (const u of d.users) { if (u.code) { u.ck = hm(u.code); delete u.code } u.rank = u.rank || c.ranks[0]; u.pts = (u.pts || []).map(p => ({ t: 'mission', by: '-', ...p })); u.qz = (u.qz && typeof u.qz == 'object') ? u.qz : {}; u.did = u.did || ''; u.weeks = u.weeks || [] }
@@ -163,8 +166,8 @@ const warns = () => { const w = []; if (!persist) w.push('Aucun disque persistan
 async function sendBackup() {
   const u = db.cfg.hooks.bak; if (!u || !okHook(u)) return false;
   try {
-    const form = new FormData(); form.append('payload_json', JSON.stringify({ content: '💾 Sauvegarde Gestion Sécurité du ' + fd(today()), allowed_mentions: { parse: [] } }));
-    form.append('files[0]', new Blob([ser(1)], { type: 'application/json' }), 'ads-sauvegarde-' + today() + '.json'); return (await fetch(u, { method: 'POST', body: form })).ok
+    const form = new FormData(); form.append('payload_json', JSON.stringify({ content: '💾 Sauvegarde GSS du ' + fd(today()), allowed_mentions: { parse: [] } }));
+    form.append('files[0]', new Blob([ser(1)], { type: 'application/json' }), 'gss-sauvegarde-' + today() + '.json'); return (await fetch(u, { method: 'POST', body: form })).ok
   } catch { return false }
 }
 function resetPoints(key, by) {
@@ -459,7 +462,7 @@ async function handle(req, res) {
   }
 
   // --- Sauvegarde des données ---
-  if (r == 'GET /api/backup') { if (!need('set')) return; LOG('sec', me.name, 'Sauvegarde téléchargée'); save(); res.writeHead(200, hd({ 'Content-Type': 'application/json', 'Content-Disposition': 'attachment; filename="ads-sauvegarde-' + today() + '.json"', 'Cache-Control': 'no-store' })); return res.end(ser(1)) }
+  if (r == 'GET /api/backup') { if (!need('set')) return; LOG('sec', me.name, 'Sauvegarde téléchargée'); save(); res.writeHead(200, hd({ 'Content-Type': 'application/json', 'Content-Disposition': 'attachment; filename="gss-sauvegarde-' + today() + '.json"', 'Cache-Control': 'no-store' })); return res.end(ser(1)) }
   if (r == 'POST /api/restore') {
     if (!need('set')) return; let d; try { d = norm(typeof b.data == 'string' ? JSON.parse(b.data) : b.data) } catch { return send(400, { error: 'Fichier de sauvegarde illisible' }) }
     if (!d.users.some(u => d.cfg.ranks.indexOf(u.rank) >= d.cfg.ranks.indexOf(d.cfg.perm.set))) return send(400, { error: 'Cette sauvegarde ne contient aucun compte avec accès aux Réglages' });
@@ -505,7 +508,7 @@ async function handle(req, res) {
     const pm2 = b.perm || {}; if (!rk.includes(pm2.dec)) return send(400, { error: 'La permission « décider des candidatures » doit viser un rang de la liste' });
     const rs = b.reset || {}; let tz = T(rs.tz, 60) || 'Europe/Paris'; try { new Intl.DateTimeFormat('en', { timeZone: tz }) } catch { return send(400, { error: 'Fuseau horaire invalide (exemple : Europe/Paris)' }) }
     const RS = { on: !!rs.on, tz }; if (RS.on != db.cfg.reset.on || RS.tz != db.cfg.reset.tz) db.lastReset = wk(tz);
-    db.cfg = { ...db.cfg, name: T(b.name, 40) || 'Gestion Sécurité', ranks: rk, perm: { hg: pm.hg, dec: pm2.dec, pts: pm.pts, set: pm.set }, hooks: ho, rankThreads, crPing: ping, pingRoles: pr, home: T(b.home, 6000), reset: RS, rq, stats, quizzes, tutos };
+    db.cfg = { ...db.cfg, name: T(b.name, 40) || 'GSS', ranks: rk, perm: { hg: pm.hg, dec: pm2.dec, pts: pm.pts, set: pm.set }, hooks: ho, rankThreads, crPing: ping, pingRoles: pr, home: T(b.home, 6000), reset: RS, rq, stats, quizzes, tutos };
     LOG('cfg', me.name, 'Réglages modifiés'); save(); return out()
   }
   if (r == 'POST /api/hook-test') {
