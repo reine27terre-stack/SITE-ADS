@@ -62,6 +62,15 @@ function wk(tz, t = new Date()) {
 function norm(d) {
   const c = d.cfg = d.cfg || {};
   if (!c.name || c.name === 'ADS' || c.name === 'Gestion ADS' || c.name === 'Gestion Sécurité') c.name = 'GSS';
+  if (!c.ranks || !c.ranks.includes('Test') || c.ranks.includes('Gestionnaire')) {
+    const rankMap = { 'Gestionnaire': 'Test', 'Senior': 'Senior', 'Vétéran': 'Certifié', 'HG': 'Chef', 'Bras droit': 'Bras Droit', 'Fondateur': 'Fondateur' };
+    for (const u of (d.users || [])) {
+      if (rankMap[u.rank]) u.rank = rankMap[u.rank];
+      else if (!DR.includes(u.rank)) u.rank = (u.id === 'u0' || u.name === 'Fondateur') ? 'Fondateur' : 'Test';
+    }
+    c.ranks = DR.slice();
+    c.perm = { hg: 'Chef', dec: 'Confirmé', pts: 'Bras Droit', set: 'Bras Droit' };
+  }
   c.ranks = c.ranks || DR.slice();
   if (!c.ranks.includes('Fondateur')) c.ranks.push('Fondateur');
   c.perm = Object.assign({ hg: 'Chef', dec: c.ranks[2] || c.ranks[0], pts: 'Bras Droit', set: 'Bras Droit' }, c.perm);
