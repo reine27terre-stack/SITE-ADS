@@ -47,6 +47,8 @@ Réglages > Médias : téléverse une image ou une vidéo, copie sa ligne (`imag
 - **Télécharger / restaurer** : Réglages > Sauvegarde des données. Après une restauration, reconnecte-toi.
 - **Code de secours** : `ADMIN_CODE` reste valable comme code de secours du plus haut rang (utile après une restauration avec un autre `SECRET`). Garde-le secret, ou supprime la variable une fois tout en place.
 
+
+
 ## Remise à zéro hebdomadaire des points
 Chaque dimanche à 00h00 (heure de Paris par défaut, donc à la fin du samedi), les points de tous les profils repartent à 0. Le total de la semaine est archivé sur le profil (« Semaines précédentes »), les comptes rendus et les logs sont conservés. Si le serveur est éteint à ce moment-là, la remise à zéro est rattrapée au démarrage. Réglable ou désactivable dans Réglages, avec un bouton « Remettre à zéro maintenant ».
 
