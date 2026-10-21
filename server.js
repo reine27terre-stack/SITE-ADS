@@ -14,14 +14,14 @@ const DRQ = ["## Questions générales :", "Demander au candidat de se présente
 const DST = [{ s: 'main', e: '<:emoji_113:1518005433590354072>', l: 'Nombre de vidéos tiktok réalisées', p: 5 }, { s: 'main', e: '<:emoji_114:1518005438694559785>', l: 'Nombre de tweet réalisées', p: 5 }, { s: 'main', e: '👀', l: 'Nombre de vues totales réalisées', p: 0.01 }, { s: 'main', e: '📝', l: 'Nombre de commentaires réalisées', p: 3 }, { s: 'main', e: '<:blurpleshield:1400686608268922880>', l: 'Nombre de jail réalisés', p: 6 }, { s: 'main', e: '<:blurpleshield:1400686608268922880>', l: 'Nombre de jail top 5 réalisés', p: 10 }, { s: 'main', e: '📈', l: 'Nombre stat-modération réalisés', p: 3 }, { s: 'main', e: '👥', l: 'Nombre de rank / dérank / staff réalisés', p: 3 }, { s: 'main', e: '💷', l: 'Nombre de contributeurs trouvés', p: 15 }, { s: 'main', e: '💷', l: 'Nombre de pub contri réalisées', p: 5 }, { s: 'sec', e: '👀', l: 'Nombre de grab bataillon réalisés', p: 5 }, { s: 'sec', e: '👀', l: 'Nombre de grab RC réalisés', p: 10 }, { s: 'sec', e: '📶', l: 'Nombre d’entretiens réalisés', p: 5, rec: 1 }, { s: 'sec', e: '📝', l: 'Nombre de formations réalisées', p: 10, rec: 1 }];
 const BQ = { id: 'bareme-des-points', t: 'Barème des points', q: [["Combien de points rapportent 1000 vues ?", ["5 points", "10 points", "15 points"], 1], ["Combien de points rapporte un grab RC ?", ["5 points", "10 points", "15 points"], 1], ["Combien de points rapporte une contri ?", ["10 points", "15 points", "20 points"], 1], ["Combien de points rapporte une formation ?", ["5 points", "10 points", "15 points"], 1], ["Où les stats doivent-elles être prouvées ?", ["Dans le serveur « Stats Gestion Sécurité » et les channels prévus", "Nulle part", "En message privé"], 0]] };
 const DQZ = [
-  { id: 'bases-de-la-gestion-securite', t: 'Bases de la gestion Sécurité', q: [["Où doit-on déposer son compte rendu ?", ["Dans son salon personnalisé", "En message privé à un HG", "Dans le salon général"], 0], ["Quand le compte rendu doit-il être remis ?", ["Chaque samedi avant 22h00", "Chaque dimanche", "Quand on a le temps"], 0], ["Que risque-t-on si le compte rendu n’est pas remis à temps ?", ["Rien", "Une sanction", "Un bonus"], 1], ["En cas de doute sur une situation, que faire ?", ["Improviser", "Demander à un supérieur", "Attendre"], 1]] },
+  { id: 'bases-de-la-gestion-securite', t: 'Bases de la gestion Sécurité', q: [["Où doit-on déposer son compte rendu ?", ["Dans son salon personnalisé", "En message privé à un HG", "Dans le salon général"], 0], ["Quand le compte rendu doit-il être remis ?", ["Chaque samedi (dépôt ouvert dès le vendredi 23h59)", "Chaque dimanche", "Quand on a le temps"], 0], ["Que risque-t-on si le compte rendu n’est pas remis à temps ?", ["Rien", "Une sanction", "Un bonus"], 1], ["En cas de doute sur une situation, que faire ?", ["Improviser", "Demander à un supérieur", "Attendre"], 1]] },
   { id: 'comptes-rendus-et-points', t: 'Comptes rendus et points', q: [["Comment le total de points d’un compte rendu est-il calculé ?", ["À la main par le gestionnaire", "Automatiquement à partir des stats et des missions", "Par tirage au sort"], 1], ["Que doit écrire le gestionnaire pour chaque activité ?", ["Un long texte", "Uniquement le nombre réalisé", "Rien"], 1], ["Qui peut ajouter des points sur un profil ?", ["N’importe qui", "Un membre autorisé (à partir du rang bras droit)", "Le gestionnaire lui-même"], 1], ["Où voit-on qui a ajouté des points ?", ["Dans la page Logs", "Nulle part", "Sur Discord uniquement"], 0]] },
   { id: 'moderation', t: 'Modération', q: [["Un membre enfreint le règlement pour la première fois. Que faire ?", ["Le bannir directement", "Avertir puis noter l’avertissement", "Ne rien faire"], 1], ["Que faire d’une preuve de sanction (capture, vidéo) ?", ["La supprimer", "La conserver", "La publier"], 1], ["Un collègue poste un contenu qui ne respecte pas les règles. Ta réaction ?", ["Le signaler à un supérieur", "L’ignorer", "Le critiquer publiquement"], 0], ["Comment traiter un conflit entre deux membres ?", ["Prendre parti", "Rester neutre et prévenir les supérieurs", "Supprimer les messages"], 1]] },
   { id: 'reseaux-sociaux', t: 'Réseaux sociaux', q: [["Tu dois poster un TikTok mais tu manques d’idées. Que faire ?", ["Ne rien poster", "Chercher des tendances ou demander de l’aide à l’équipe", "Copier la vidéo d’un autre"], 1], ["Quelle activité est comptée dans les stats du compte rendu ?", ["Le nombre de vidéos TikTok réalisées", "Le nombre d’heures de sommeil", "Le nombre d’amis"], 0], ["Que doit-on indiquer en bas du compte rendu ?", ["Son TikTok et son Twitter", "Son adresse", "Rien"], 0]] },
   { id: 'recrutement-et-entretiens', t: 'Recrutement et entretiens', q: [["Qui décide d’accepter ou de refuser une candidature ?", ["Le candidat", "Un HG", "Tout le monde"], 1], ["Que se passe-t-il après une candidature acceptée ?", ["Le membre passe en attente de formation", "Il devient HG", "Rien"], 0], ["À la fin de la formation, que faut-il faire ?", ["Envoyer le rapport de formation", "Rien", "Supprimer le candidat"], 0], ["Que remplit-on sous chaque question d’entretien ?", ["La réponse du candidat", "Son mot de passe", "Rien"], 0]] }, BQ];
 const DTU = [
   { t: 'Recrutement', b: "1. Ouvre la page Recrutement.\n2. Remplis le pseudo et l’ID du candidat, la date, qui a fait l’entretien et qui supervise.\n3. Écris la réponse du candidat sous chaque question.\n4. Clique sur « Enregistrer et envoyer le rapport d’entretien » : le rapport part dans Discord.\n5. Un HG accepte, refuse ou met la candidature en attente : chaque décision part dans son salon.\n6. Si le candidat est accepté, il reste « en attente de formation » jusqu’au bouton « Formation terminée », qui envoie le rapport de formation." },
-  { t: 'Comptes rendus', b: "1. Ouvre la page Comptes rendus.\n2. Pour chaque activité, écris seulement le nombre réalisé.\n3. Le total de points se calcule tout seul : stats, autres activités et missions données.\n4. Remplis le point de vue et ton TikTok/Twitter, puis envoie.\n5. À rendre chaque samedi avant 22h00.\n6. Justificatifs obligatoires : toutes les stats doivent être prouvées et documentées dans le serveur « Stats Gestion Sécurité » et dans les channels prévus." },
+  { t: 'Comptes rendus', b: "1. Ouvre la page Comptes rendus.\n2. Pour chaque activité, écris seulement le nombre réalisé.\n3. Le total de points se calcule tout seul : stats, autres activités et missions données.\n4. Remplis le point de vue et ton TikTok/Twitter, puis envoie.\n5. À rendre chaque samedi (option ouverte dès le vendredi 23h59 jusqu'à la clôture du samedi).\n6. Le classement se met à jour à la clôture et reste figé jusqu'au samedi suivant.\n7. Justificatifs obligatoires : toutes les stats doivent être prouvées et documentées dans le serveur « Stats Gestion Sécurité » et dans les channels prévus." },
   { t: 'Profils', b: "Chaque profil affiche les points, l’historique et les quiz. Les membres autorisés (à partir du rang bras droit) peuvent ajouter ou retirer des points avec un motif. Tout est enregistré dans les Logs." },
   { t: 'Quiz', b: "1. Ouvre la page Quiz et choisis un quiz.\n2. Réponds à toutes les questions, puis clique sur « Corriger ».\n3. Ton dernier score est gardé sur ton profil. Les quiz servent aussi de rappel de formation." }];
 
@@ -59,6 +59,77 @@ function wk(tz, t = new Date()) {
   const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' }).formatToParts(t).map(x => [x.type, x.value]));
   return new Date(Date.UTC(+p.year, +p.month - 1, +p.day) - ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(p.weekday) * 864e5).toISOString().slice(0, 10)
 }
+// Statut et fenêtre d'ouverture des comptes rendus :
+// Dépôt ouvert chaque semaine du vendredi 23h59 au samedi soir (clôture).
+// Le classement se met à jour à la clôture et reste figé jusqu'au samedi d'après.
+function getCrStatus(d, now = new Date()) {
+  const tz = (d && d.cfg && d.cfg.reset && d.cfg.reset.tz) || 'Europe/Paris';
+  let parts;
+  try {
+    parts = Object.fromEntries(new Intl.DateTimeFormat('en-CA', {
+      timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit',
+      weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+    }).formatToParts(now).map(x => [x.type, x.value]));
+  } catch {
+    parts = Object.fromEntries(new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit',
+      weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+    }).formatToParts(now).map(x => [x.type, x.value]));
+  }
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const dayIdx = days.indexOf(parts.weekday);
+  const hour = parseInt(parts.hour, 10);
+  const minute = parseInt(parts.minute, 10);
+
+  // Fenêtre d'ouverture : vendredi dès 23h59, ou samedi toute la journée
+  const isFriOpen = (dayIdx === 5 && (hour === 23 && minute >= 59));
+  const isSat = (dayIdx === 6);
+  const inWindow = isFriOpen || isSat;
+
+  const localDate = new Date(Date.UTC(+parts.year, +parts.month - 1, +parts.day));
+
+  // Samedi qui vient de s'achever
+  const prevSatOffset = (dayIdx === 0 ? 1 : (dayIdx + 1));
+  const prevSat = new Date(localDate.getTime() - prevSatOffset * 864e5).toISOString().slice(0, 10);
+
+  // Samedi cible de la session en cours ou à venir
+  let satDate;
+  if (dayIdx === 5 && (hour === 23 && minute >= 59)) {
+    satDate = new Date(localDate.getTime() + 864e5).toISOString().slice(0, 10);
+  } else if (dayIdx === 6) {
+    satDate = localDate.toISOString().slice(0, 10);
+  } else if (dayIdx === 0) {
+    satDate = prevSat;
+  } else {
+    satDate = new Date(localDate.getTime() + (6 - dayIdx) * 864e5).toISOString().slice(0, 10);
+  }
+
+  // Prochaine ouverture (vendredi à 23h59)
+  let daysUntilFri = (5 - dayIdx + 7) % 7;
+  if (daysUntilFri === 0 && (hour > 23 || (hour === 23 && minute >= 59))) {
+    daysUntilFri = 7;
+  }
+  const nextOpenFri = new Date(localDate.getTime() + daysUntilFri * 864e5).toISOString().slice(0, 10);
+
+  const closedDays = (d && d.crClosedDays) || [];
+  const isClosed = closedDays.includes(satDate);
+  const isForceOpen = !!(d && d.crForceOpen);
+
+  let open = false, reason = '';
+  if (isForceOpen) {
+    open = true;
+  } else if (!inWindow) {
+    open = false;
+    reason = "Les comptes rendus sont fermés. L'option ouvre chaque vendredi à 23h59 pour la journée du samedi.";
+  } else if (isClosed) {
+    open = false;
+    reason = 'Les comptes rendus du samedi ' + fd(satDate) + ' sont clôturés par la direction.';
+  } else {
+    open = true;
+  }
+
+  return { open, inWindow, isClosed, isForceOpen, satDate, prevSat, nextOpenFri, reason, tz };
+}
 function norm(d) {
   const c = d.cfg = d.cfg || {};
   if (!c.name || c.name === 'ADS' || c.name === 'Gestion ADS' || c.name === 'Gestion Sécurité') c.name = 'GSS';
@@ -87,7 +158,7 @@ function norm(d) {
   delete c.hg; delete c.qs; delete c.quiz; delete c.admin;
   for (const u of d.users) { if (u.code) { u.ck = hm(u.code); delete u.code } u.rank = u.rank || c.ranks[0]; u.pts = (u.pts || []).map(p => ({ t: 'mission', by: '-', ...p })); u.qz = (u.qz && typeof u.qz == 'object') ? u.qz : {}; u.did = u.did || ''; u.weeks = u.weeks || [] }
   d.rcs = (d.rcs || []).map(r => ({ cand: r.pseudo, ...r })); d.crs = d.crs || []; d.logs = d.logs || []; d.sess = d.sess || {}; d.media = d.media || []; d.lb = d.lb || null;
-  d.crClosedDays = d.crClosedDays || [];
+  d.crClosedDays = d.crClosedDays || []; d.crForceOpen = !!d.crForceOpen;
   return d
 }
 fs.mkdirSync(MDIR, { recursive: true });
@@ -158,6 +229,69 @@ async function sayMsg(k, content, userIds = []) {
     return false;
   }
 }
+async function closeCrSession(satDate, closedByName = 'Système') {
+  db.crClosedDays = db.crClosedDays || [];
+  if (!db.crClosedDays.includes(satDate)) db.crClosedDays.push(satDate);
+  delete db.crForceOpen;
+
+  // 1. Actualisation du classement (leaderboard) figé jusqu'au samedi d'après
+  const lbEntries = db.users.map(u => {
+    const userCr = db.crs.find(c => c.date === satDate && (c.uid === u.id || c.by.toLowerCase() === u.name.toLowerCase()));
+    const crTotal = userCr ? userCr.total : r2((u.pts || []).filter(p => p.t === 'cr').reduce((s, p) => s + p.v, 0));
+    return { name: u.name, rank: u.rank, did: u.did, total: crTotal };
+  }).filter(en => en.total > 0).sort((a, b) => b.total - a.total);
+
+  db.lb = { weekOf: satDate, entries: lbEntries, closedBy: closedByName, closedAt: Date.now() };
+
+  // 2. Détection des profils sans CR pour cette session du samedi
+  const crToday = db.crs.filter(c => c.date === satDate);
+  const sentUids = new Set(crToday.map(c => c.uid));
+  const sentNames = new Set(crToday.map(c => c.by.toLowerCase()));
+  const missing = db.users.filter(u => !sentUids.has(u.id) && !sentNames.has(u.name.toLowerCase()));
+
+  // 3. Construction de l'embed Discord
+  const hasMissing = missing.length > 0;
+  const lines = missing.map(u => {
+    const menText = u.did ? '<@' + u.did + '> (' + u.name + ')' : '**' + u.name + '**';
+    return '• ' + menText + ' — *' + u.rank + '*';
+  });
+
+  const fl = [
+    {
+      name: '📊 Bilan des réceptions',
+      value: '**' + (db.users.length - missing.length) + '** / **' + db.users.length + '** comptes rendus reçus (' + Math.round(((db.users.length - missing.length) / Math.max(1, db.users.length)) * 100) + '%)'
+    }
+  ];
+
+  if (hasMissing) {
+    for (let i = 0; i < lines.length; i += 20) {
+      fl.push({
+        name: i === 0 ? '⚠️ Comptes rendus non reçus (' + missing.length + ')' : '⚠️ Suite',
+        value: lines.slice(i, i + 20).join('\n')
+      });
+    }
+  } else {
+    fl.push({
+      name: '✅ Statut des rendus',
+      value: 'Tous les membres de l’équipe ont rendu leur compte rendu pour cette session ! Félicitations ! 👏'
+    });
+  }
+
+  const emb = E({
+    title: '🔒 Clôture des comptes rendus – ' + fd(satDate),
+    color: hasMissing ? 0xed4245 : 0x2fbf71,
+    description: 'Les comptes rendus du **' + fd(satDate) + '** ont été clôturés par **' + closedByName + '**.\n🏆 Le classement hebdomadaire a été actualisé sur le site et reste figé jusqu’au samedi d’après.',
+    fields: fl
+  });
+
+  const missingDids = missing.map(u => u.did).filter(Boolean);
+  const pingText = missingDids.map(id => '<@' + id + '>').join(' ');
+  await say('base', [emb], pingText);
+
+  LOG('cr', closedByName, 'Clôture des CR du ' + fd(satDate) + ' (' + missing.length + ' retardataires)');
+  save();
+  return { missingCount: missing.length, closedDay: satDate };
+}
 const qEmbeds = n => {
   let i = 0; const fl = []; for (const x of n.a) fl.push(x[0] == '##' ? { name: '━━ ' + x[1] + ' ━━', value: '\u200b' } : { name: ('Question ' + (++i) + ' : ' + x[0]).slice(0, 256), value: V(x[1]) });
   return pack(E({ title: '📋 Rapport d’entretien', description: '**Candidat :** ' + who(n.cand, n.did) + '\n**Date :** ' + fd(n.date) + '\n**Réalisé par :** ' + n.by + '\n**Supervisé par :** ' + (n.sup || '-') }), fl)
@@ -181,17 +315,25 @@ async function sendBackup() {
 }
 function resetPoints(key, by) {
   try { fs.mkdirSync(BK, { recursive: true }); fs.writeFileSync(path.join(BK, 'avant-reset-' + key + '-' + Date.now() + '.json'), ser(1), { mode: 0o600 }) } catch { }
-  // Capture le classement des CR de la semaine avant remise à zéro
-  const lbEntries = db.users.map(u => ({
-    name: u.name, rank: u.rank,
-    total: r2(u.pts.filter(p => p.t === 'cr').reduce((s, p) => s + p.v, 0))
-  })).filter(en => en.total > 0).sort((a, b) => b.total - a.total);
-  db.lb = { weekOf: key, entries: lbEntries };
+  // Le classement se met à jour à la clôture des CR et reste figé jusqu'au samedi d'après.
+  // On ne remplace db.lb QUE s'il n'existe pas encore.
+  if (!db.lb) {
+    const lbEntries = db.users.map(u => ({
+      name: u.name, rank: u.rank,
+      total: r2((u.pts || []).filter(p => p.t === 'cr').reduce((s, p) => s + p.v, 0))
+    })).filter(en => en.total > 0).sort((a, b) => b.total - a.total);
+    db.lb = { weekOf: key, entries: lbEntries, closedBy: by, closedAt: Date.now() };
+  }
   for (const u of db.users) { u.weeks = [{ d: key, t: r2(u.pts.reduce((s, p) => s + p.v, 0)) }, ...(u.weeks || [])].slice(0, 26); u.pts = [] }
   db.lastReset = key; LOG('pts', by, 'Points remis à zéro pour ' + db.users.length + ' profils'); save()
 }
 async function tick() {
   try {
+    const crSt = getCrStatus(db);
+    // Si la fenêtre du samedi précédent s'est achevée sans clôture manuelle, clôture automatique :
+    if (crSt.prevSat && !(db.crClosedDays || []).includes(crSt.prevSat)) {
+      await closeCrSession(crSt.prevSat, 'Système (automatique)');
+    }
     const c = db.cfg.reset; if (c.on) { const k = wk(c.tz); if (k !== db.lastReset) resetPoints(k, 'Système') }
     if (db.cfg.hooks.bak && db.lastBak !== today()) { db.lastBak = today(); save(); sendBackup() }
   } catch (e) { console.error(e) }
@@ -210,6 +352,15 @@ async function handle(req, res) {
     const pg = ['index.html', 'public/index.html'].map(x => path.join(__dirname, x)).find(x => fs.existsSync(x));
     if (!pg) { res.writeHead(500, hd({ 'Content-Type': 'text/plain; charset=utf-8' })); return res.end('Le serveur tourne, mais le fichier index.html est introuvable. Vérifie qu’il est bien dans le dépôt GitHub, à côté de server.js.') }
     res.writeHead(200, hd({ 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'Content-Security-Policy': CSP })); return res.end(fs.readFileSync(pg))
+  }
+  if (req.method == 'GET' && (p == '/favicon.ico' || p == '/favicon.svg')) {
+    const fn = p == '/favicon.svg' ? 'favicon.svg' : (fs.existsSync(path.join(__dirname, 'favicon.ico')) ? 'favicon.ico' : 'favicon.svg');
+    const fp = path.join(__dirname, fn);
+    if (fs.existsSync(fp)) {
+      const isSvg = fn.endsWith('.svg');
+      res.writeHead(200, hd({ 'Content-Type': isSvg ? 'image/svg+xml' : 'image/x-icon', 'Cache-Control': 'public, max-age=86400' }));
+      return res.end(fs.readFileSync(fp));
+    }
   }
   let m;
   if (req.method == 'GET' && (m = p.match(/^\/media\/([0-9a-f]{16})\.(png|jpg|gif|webp|mp4|webm)$/))) { // médias : réservés aux comptes connectés
@@ -251,7 +402,7 @@ async function handle(req, res) {
     return {
       cfg: P2.set ? { ...c, hooks: Object.fromEntries(Object.entries(c.hooks).map(([k, v]) => [k, mask(v)])), rankThreads: c.rankThreads || {} } : pub, users: P2.hg ? db.users.map(nc) : db.users.filter(u => u.id == me.id).map(nc),
       rcs: (P2.hg || P2.dec) ? db.rcs : db.rcs.filter(x => x.uid == me.id), crs: P2.hg ? db.crs : db.crs.filter(x => x.uid == me.id), logs: P2.hg ? db.logs.slice(0, 300) : [], media: P2.set ? db.media.slice(0, 60) : [], warn: P2.set ? warns() : [], lb: db.lb || null,
-      crClosedDays: db.crClosedDays || []
+      crClosedDays: db.crClosedDays || [], crStatus: getCrStatus(db)
     }
   };
   const out = (x = {}) => send(200, { me: mk(cur()), S: view(), ...x });
@@ -283,8 +434,12 @@ async function handle(req, res) {
 
   // --- Comptes rendus : points calculés côté serveur ---
   if (r == 'POST /api/cr') {
-    const date = isD(b.date) ? b.date : today();
-    if ((db.crClosedDays || []).includes(date)) return send(400, { error: 'Les comptes rendus du ' + fd(date) + ' sont clôturés par la direction.' });
+    const crSt = getCrStatus(db);
+    if (!crSt.open && !P.founder) return send(400, { error: crSt.reason || 'Les comptes rendus ne sont pas ouverts. Ils ouvrent le vendredi à 23h59 pour la journée du samedi.' });
+    const date = crSt.satDate;
+    if ((db.crClosedDays || []).includes(date) && !P.founder) return send(400, { error: 'Les comptes rendus du samedi ' + fd(date) + ' sont clôturés par la direction.' });
+    const alreadySent = db.crs.find(c => c.date === date && (c.uid === me.id || c.by.toLowerCase() === me.name.toLowerCase()));
+    if (alreadySent && !P.founder) return send(400, { error: 'Tu as déjà envoyé ton compte rendu pour cette semaine (session du samedi ' + fd(date) + ').' });
     const st = db.cfg.stats, vals = st.map((s, i) => s.rec && !me.rec ? null : Math.max(0, N((b.vals || [])[i]))), x = cur(), id = rnd(5),
       pts = r2(st.reduce((t, s, i) => t + (vals[i] || 0) * s.p, 0)), op = N(b.op, 1e6), mis = r2(x.pts.filter(q => q.t == 'mission' && !q.rep).reduce((t, q) => t + q.v, 0)), total = r2(pts + op + mis),
       L = l => st.map((s, i) => s.s == l && vals[i] !== null ? (s.e ? s.e + ' ' : '') + '• ' + s.l + ' : ' + vals[i] : null).filter(Boolean),
@@ -306,7 +461,7 @@ async function handle(req, res) {
     // Détection du fil ou webhook par rang
     const rkDest = (db.cfg.rankThreads || {})[me.rank] || '';
     say('cr', [emb], [f.pseudo, f.ping, f.ot, f.prob, f.amel, f.shib, f.tt].join(' '), rkDest);
-    return out({ total })
+    return out({ total, date })
   }
 
   // --- Décisions sur CR (Rank up, Stagne, Derank) ---
@@ -335,78 +490,25 @@ async function handle(req, res) {
     return out({ decision: cr.decision });
   }
 
-  // --- Clôture des comptes rendus du jour (Fondateur uniquement) ---
+  // --- Clôture des comptes rendus du samedi (Fondateur uniquement) ---
   if (r == 'POST /api/cr/close-day') {
     if (!P.founder) return send(403, { error: 'Réservé au rôle Fondateur' });
-    const curDay = today();
-    db.crClosedDays = db.crClosedDays || [];
-    if (!db.crClosedDays.includes(curDay)) db.crClosedDays.push(curDay);
-
-    // 1. Actualisation du classement (leaderboard)
-    const lbEntries = db.users.map(u => ({
-      name: u.name, rank: u.rank, did: u.did,
-      total: r2(u.pts.filter(p => p.t === 'cr').reduce((s, p) => s + p.v, 0))
-    })).filter(en => en.total > 0).sort((a, b) => b.total - a.total);
-    db.lb = { weekOf: curDay, entries: lbEntries, closedBy: me.name, closedAt: Date.now() };
-
-    // 2. Détection des profils sans CR aujourd'hui
-    const crToday = db.crs.filter(c => c.date === curDay);
-    const sentUids = new Set(crToday.map(c => c.uid));
-    const sentNames = new Set(crToday.map(c => c.by.toLowerCase()));
-    const missing = db.users.filter(u => !sentUids.has(u.id) && !sentNames.has(u.name.toLowerCase()));
-
-    // 3. Construction de l'embed pour le salon de base
-    const hasMissing = missing.length > 0;
-    const lines = missing.map(u => {
-      const menText = u.did ? '<@' + u.did + '> (' + u.name + ')' : '**' + u.name + '**';
-      return '• ' + menText + ' — *' + u.rank + '*';
-    });
-
-    const fl = [
-      {
-        name: '📊 Bilan des réceptions',
-        value: '**' + (db.users.length - missing.length) + '** / **' + db.users.length + '** comptes rendus reçus (' + Math.round(((db.users.length - missing.length) / Math.max(1, db.users.length)) * 100) + '%)'
-      }
-    ];
-
-    if (hasMissing) {
-      for (let i = 0; i < lines.length; i += 20) {
-        fl.push({
-          name: i === 0 ? '⚠️ Comptes rendus non reçus (' + missing.length + ')' : '⚠️ Suite',
-          value: lines.slice(i, i + 20).join('\n')
-        });
-      }
-    } else {
-      fl.push({
-        name: '✅ Statut des rendus',
-        value: 'Tous les membres de l’équipe ont rendu leur compte rendu aujourd’hui ! Félicitations ! 👏'
-      });
-    }
-
-    const emb = E({
-      title: '🔒 Clôture des comptes rendus – ' + fd(curDay),
-      color: hasMissing ? 0xed4245 : 0x2fbf71,
-      description: 'Les comptes rendus du **' + fd(curDay) + '** ont été clôturés par **' + me.name + '**.\n🏆 Le classement hebdomadaire a été actualisé sur le site.',
-      fields: fl
-    });
-
-    const missingDids = missing.map(u => u.did).filter(Boolean);
-    const pingText = missingDids.map(id => '<@' + id + '>').join(' ');
-    await say('base', [emb], pingText);
-
-    LOG('cr', me.name, 'Clôture des CR du ' + fd(curDay) + ' (' + missing.length + ' retardataires)');
-    save();
-    return out({ missingCount: missing.length, closedDay: curDay });
+    const crSt = getCrStatus(db);
+    const targetDay = crSt.satDate;
+    const res = await closeCrSession(targetDay, me.name);
+    return out(res);
   }
 
-  // --- Réouverture des comptes rendus du jour (Fondateur uniquement) ---
+  // --- Réouverture des comptes rendus du samedi (Fondateur uniquement) ---
   if (r == 'POST /api/cr/reopen-day') {
     if (!P.founder) return send(403, { error: 'Réservé au rôle Fondateur' });
-    const curDay = today();
-    db.crClosedDays = (db.crClosedDays || []).filter(d => d !== curDay);
-    LOG('cr', me.name, 'Réouverture des CR du ' + fd(curDay));
+    const crSt = getCrStatus(db);
+    const targetDay = crSt.satDate;
+    db.crClosedDays = (db.crClosedDays || []).filter(d => d !== targetDay);
+    if (!crSt.inWindow) db.crForceOpen = true;
+    LOG('cr', me.name, 'Réouverture des CR du ' + fd(targetDay));
     save();
-    return out({ reopenedDay: curDay });
+    return out({ reopenedDay: targetDay });
   }
 
   // --- Comptes, rangs, points ---

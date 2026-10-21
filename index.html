@@ -1,97 +1,165 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>GSS – Espace de gestion</title>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20128%20128'%3E%3Cdefs%3E%3ClinearGradient%20id='bgGrad'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%2338bdf8'/%3E%3Cstop%20offset='100%25'%20stop-color='%236366f1'/%3E%3C/linearGradient%3E%3ClinearGradient%20id='shieldShade'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='0%25'%3E%3Cstop%20offset='0%25'%20stop-color='%23ffffff'/%3E%3Cstop%20offset='50%25'%20stop-color='%23f8fafc'/%3E%3Cstop%20offset='50%25'%20stop-color='%23e2e8f0'/%3E%3Cstop%20offset='100%25'%20stop-color='%23cbd5e1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='128'%20height='128'%20rx='28'%20fill='url(%23bgGrad)'/%3E%3Crect%20x='2'%20y='2'%20width='124'%20height='124'%20rx='26'%20fill='none'%20stroke='%23ffffff'%20stroke-opacity='0.25'%20stroke-width='3'/%3E%3Cpath%20d='M%2064%2022%20L%2096%2034%20C%2096%2070%2082%2096%2064%20106%20C%2046%2096%2032%2070%2032%2034%20Z'%20fill='url(%23shieldShade)'/%3E%3Cpath%20d='M%2064%2034%20L%2086%2042%20C%2086%2068%2076%2086%2064%2094%20C%2052%2086%2042%2068%2042%2042%20Z'%20fill='none'%20stroke='%2338bdf8'%20stroke-width='4.5'%20stroke-linejoin='round'/%3E%3Cpath%20d='M%2064%2047%20L%2067.5%2056.5%20L%2077.5%2056.5%20L%2069.5%2062%20L%2072.5%2071.5%20L%2064%2066%20L%2055.5%2071.5%20L%2058.5%2062%20L%2050.5%2056.5%20L%2060.5%2056.5%20Z'%20fill='%236366f1'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="alternate icon" href="/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#090d16;--sidebar:rgba(13,20,36,.88);--card:rgba(18,29,51,.68);--hdr:rgba(13,20,36,.85);--ink:#f1f7fc;--mut:#94a8be;--line:rgba(148,163,184,.14);--acc:#38bdf8;--acc2:#6366f1;--fg:#ffffff;--warn:#fbbf24;--bad:#f87171;--ok:#34d399;--in:rgba(10,16,30,.75);--sh:0 12px 32px rgba(0,0,0,.32)}
-@media(prefers-color-scheme:light){:root{--bg:#f4f7fb;--sidebar:rgba(255,255,255,.94);--card:rgba(255,255,255,.9);--hdr:rgba(244,247,251,.9);--ink:#0f172a;--mut:#64748b;--line:rgba(148,163,184,.25);--acc:#0284c7;--acc2:#4f46e5;--fg:#fff;--warn:#d97706;--bad:#dc2626;--ok:#059669;--in:#ffffff;--sh:0 10px 28px rgba(15,23,42,.08)}}
-*{box-sizing:border-box}html{scroll-behavior:smooth}
-body{margin:0;min-height:100vh;color:var(--ink);font:15px/1.6 Figtree,system-ui,sans-serif;background:radial-gradient(1000px 600px at 90% -10%,rgba(56,189,248,.18),transparent 65%),radial-gradient(900px 600px at -10% 20%,rgba(99,102,241,.15),transparent 60%),var(--bg);background-attachment:fixed}
+:root{--bg:#060a13;--sidebar:rgba(10,16,30,.92);--card:rgba(14,22,42,.72);--hdr:rgba(10,16,30,.88);--ink:#eaf2fc;--mut:#7e95b0;--line:rgba(120,150,190,.12);--acc:#38bdf8;--acc2:#818cf8;--fg:#ffffff;--warn:#fbbf24;--bad:#fb7185;--ok:#34d399;--in:rgba(8,14,28,.8);--sh:0 8px 32px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.2);--glow:rgba(56,189,248,.06);--glow2:rgba(129,140,248,.06)}
+@media(prefers-color-scheme:light){:root{--bg:#f0f4fa;--sidebar:rgba(255,255,255,.96);--card:rgba(255,255,255,.92);--hdr:rgba(240,244,250,.92);--ink:#0f172a;--mut:#5a6d82;--line:rgba(120,140,170,.18);--acc:#0284c7;--acc2:#6366f1;--fg:#fff;--warn:#d97706;--bad:#e11d48;--ok:#059669;--in:rgba(255,255,255,.9);--sh:0 6px 24px rgba(15,23,42,.06),0 1px 4px rgba(15,23,42,.04);--glow:rgba(2,132,199,.04);--glow2:rgba(99,102,241,.04)}}
+*{box-sizing:border-box;margin:0}html{scroll-behavior:smooth}
+body{min-height:100vh;color:var(--ink);font:15px/1.65 Inter,system-ui,-apple-system,sans-serif;background:var(--bg);background-attachment:fixed;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse 900px 600px at 85% -8%,rgba(56,189,248,.14),transparent 60%),radial-gradient(ellipse 800px 500px at -5% 15%,rgba(129,140,248,.12),transparent 55%),radial-gradient(ellipse 600px 400px at 50% 80%,rgba(56,189,248,.06),transparent 60%);animation:bgShift 20s ease-in-out infinite alternate;pointer-events:none}
+@keyframes bgShift{0%{opacity:.85}50%{opacity:1}100%{opacity:.85}}
 
-/* Layout latéral */
+/* Layout */
 .app-layout{display:flex;min-height:100vh}
-.sidebar{width:250px;flex-shrink:0;background:var(--sidebar);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;z-index:10}
-.side-brand{display:flex;align-items:center;gap:12px;padding:20px 18px 16px;border-bottom:1px solid var(--line)}
-.side-brand .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;display:grid;place-items:center;font-size:18px;box-shadow:0 4px 14px rgba(56,189,248,.35)}
-.side-brand .b-name{font-weight:700;font-size:16px;letter-spacing:-.01em;color:var(--ink);line-height:1.2}
-.side-brand .b-sub{font-size:12px;color:var(--mut)}
-.side-nav{flex:1;overflow-y:auto;padding:14px 10px;display:flex;flex-direction:column;gap:4px;scrollbar-width:none}
+.sidebar{width:260px;flex-shrink:0;background:var(--sidebar);backdrop-filter:blur(24px) saturate(1.3);-webkit-backdrop-filter:blur(24px) saturate(1.3);border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;z-index:10}
+.side-brand{display:flex;align-items:center;gap:14px;padding:22px 20px 18px;border-bottom:1px solid var(--line)}
+.side-brand .logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;display:grid;place-items:center;font-size:20px;box-shadow:0 4px 16px rgba(56,189,248,.3),0 0 0 1px rgba(255,255,255,.1) inset;animation:logoPulse 4s ease-in-out infinite;position:relative}
+.side-brand .logo::after{content:'';position:absolute;inset:-3px;border-radius:14px;background:linear-gradient(135deg,rgba(56,189,248,.4),rgba(129,140,248,.4));z-index:-1;filter:blur(8px);opacity:.5}
+@keyframes logoPulse{0%,100%{box-shadow:0 4px 16px rgba(56,189,248,.3),0 0 0 1px rgba(255,255,255,.1) inset}50%{box-shadow:0 4px 24px rgba(56,189,248,.45),0 0 0 1px rgba(255,255,255,.15) inset}}
+.side-brand .b-name{font-weight:800;font-size:17px;letter-spacing:-.02em;color:var(--ink);line-height:1.2}
+.side-brand .b-sub{font-size:11.5px;color:var(--mut);font-weight:500;letter-spacing:.02em;text-transform:uppercase}
+.side-nav{flex:1;overflow-y:auto;padding:16px 12px;display:flex;flex-direction:column;gap:3px;scrollbar-width:none}
 .side-nav::-webkit-scrollbar{display:none}
-.side-nav button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;color:var(--mut);border:1px solid transparent;padding:10px 14px;border-radius:12px;font-size:14px;font-weight:500;box-shadow:none;transition:all .15s ease}
-.side-nav button:hover{color:var(--ink);background:rgba(56,189,248,.08);transform:translateX(2px)}
-.side-nav button.on{color:var(--ink);background:linear-gradient(135deg,rgba(56,189,248,.18),rgba(99,102,241,.12));border-color:rgba(56,189,248,.35);font-weight:700;box-shadow:0 4px 12px rgba(56,189,248,.1)}
-.side-user{padding:14px 14px 16px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px;background:rgba(10,16,30,.25)}
-.user-row{display:flex;align-items:center;gap:10px}
-.user-av{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#38bdf8,#6366f1);color:#fff;font-weight:700;font-size:13px;display:grid;place-items:center;flex-shrink:0}
+.side-nav button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;color:var(--mut);border:1px solid transparent;padding:10px 14px;border-radius:12px;font-size:14px;font-weight:500;box-shadow:none;transition:all .2s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden}
+.side-nav button::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:0;border-radius:0 4px 4px 0;background:linear-gradient(180deg,var(--acc),var(--acc2));transition:height .2s cubic-bezier(.16,1,.3,1);opacity:0}
+.side-nav button:hover{color:var(--ink);background:rgba(56,189,248,.06);transform:translateX(3px)}
+.side-nav button.on{color:var(--ink);background:linear-gradient(135deg,rgba(56,189,248,.12),rgba(129,140,248,.08));border-color:rgba(56,189,248,.2);font-weight:700;box-shadow:0 2px 12px rgba(56,189,248,.08)}
+.side-nav button.on::before{height:22px;opacity:1}
+.side-user{padding:16px 16px 18px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg,transparent,rgba(56,189,248,.03))}
+.user-row{display:flex;align-items:center;gap:12px}
+.user-av{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#38bdf8,#818cf8);color:#fff;font-weight:700;font-size:13px;display:grid;place-items:center;flex-shrink:0;box-shadow:0 2px 8px rgba(56,189,248,.25)}
 .user-meta{flex:1;min-width:0}
 .user-meta .u-name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 .main-content{flex:1;min-width:0;display:flex;flex-direction:column}
 .mobile-hdr{display:none}
-main{max-width:920px;width:100%;margin:0 auto;padding:28px 24px 80px;animation:rise .3s cubic-bezier(.16,1,.3,1)}
-@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+main{max-width:940px;width:100%;margin:0 auto;padding:32px 28px 80px;animation:rise .4s cubic-bezier(.16,1,.3,1)}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){main{animation:none}*{transition:none!important}}
 
-/* Responsive mobile */
+/* Mobile */
 @media(max-width:799px){
   .app-layout{flex-direction:column}
   .sidebar{display:none}
-  .mobile-hdr{position:sticky;top:0;z-index:10;display:flex;flex-direction:column;background:var(--hdr);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line);padding:10px 14px 6px}
+  .mobile-hdr{position:sticky;top:0;z-index:10;display:flex;flex-direction:column;background:var(--hdr);backdrop-filter:blur(20px) saturate(1.2);-webkit-backdrop-filter:blur(20px) saturate(1.2);border-bottom:1px solid var(--line);padding:12px 16px 8px}
   .mob-top{display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:8px}
   .mob-nav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;width:100%;padding-bottom:4px}
   .mob-nav::-webkit-scrollbar{display:none}
-  .mob-nav button{background:none;color:var(--mut);border:1px solid transparent;padding:6px 12px;border-radius:99px;white-space:nowrap;box-shadow:none;font-size:13px}
-  .mob-nav button.on{color:var(--ink);background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.35);font-weight:700}
-  main{padding:18px 14px 60px}
+  .mob-nav button{background:none;color:var(--mut);border:1px solid transparent;padding:7px 14px;border-radius:99px;white-space:nowrap;box-shadow:none;font-size:13px;font-weight:500;transition:all .15s ease}
+  .mob-nav button.on{color:var(--ink);background:linear-gradient(135deg,rgba(56,189,248,.12),rgba(129,140,248,.08));border-color:rgba(56,189,248,.25);font-weight:700}
+  main{padding:20px 16px 60px}
 }
 
-/* UI Elements */
-h1,h2,h3{letter-spacing:-.02em}h2{margin:.2em 0 .8em;font-size:26px;font-weight:700}h3{margin:1.2em 0 .6em;font-size:16px;color:var(--acc);font-weight:600}
-button{font:inherit;font-weight:600;background:linear-gradient(135deg,var(--acc),var(--acc2));color:var(--fg);border:0;border-radius:10px;padding:9px 18px;cursor:pointer;transition:transform .12s ease,box-shadow .15s ease,filter .15s ease;box-shadow:0 4px 14px rgba(56,189,248,.25)}
-button:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 6px 18px rgba(56,189,248,.35)}button:active{transform:none}
-button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}button.ghost:hover{background:rgba(56,189,248,.08);border-color:rgba(56,189,248,.3)}
+/* Typography */
+h1,h2,h3{letter-spacing:-.03em;line-height:1.25}
+h2{margin:.2em 0 .9em;font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--ink),var(--mut));-webkit-background-clip:text;background-clip:text}
+h3{margin:1.4em 0 .7em;font-size:15px;color:var(--acc);font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+
+/* Buttons */
+button{font:inherit;font-weight:600;background:linear-gradient(135deg,var(--acc),var(--acc2));color:var(--fg);border:0;border-radius:11px;padding:10px 20px;cursor:pointer;transition:all .2s cubic-bezier(.16,1,.3,1);box-shadow:0 4px 16px rgba(56,189,248,.2),0 0 0 1px rgba(255,255,255,.06) inset;position:relative;overflow:hidden}
+button::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.12),transparent 50%);pointer-events:none;opacity:1;transition:opacity .2s}
+button:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(56,189,248,.3),0 0 0 1px rgba(255,255,255,.1) inset}
+button:active{transform:translateY(0);box-shadow:0 2px 8px rgba(56,189,248,.2)}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+button.ghost::after{display:none}
+button.ghost:hover{background:rgba(56,189,248,.06);border-color:rgba(56,189,248,.25);box-shadow:0 2px 12px rgba(56,189,248,.08);transform:translateY(-1px)}
 button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-input,select,textarea{font:inherit;width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--in);color:var(--ink);transition:border-color .15s,box-shadow .15s}
-input:focus,select:focus,textarea:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(56,189,248,.15);outline:none}
-label{display:block;margin:0 0 14px;color:var(--mut);font-size:14px;font-weight:500}label input,label select,label textarea{margin-top:6px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;margin:0 0 16px;box-shadow:var(--sh);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transition:border-color .15s}
-.card:hover{border-color:rgba(56,189,248,.22)}
-.row{display:flex;gap:12px;align-items:flex-end}.row>*{flex:1}.row button{flex:0 0 auto;margin-bottom:14px}
-.top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.acts select{width:auto}
-.mut{color:var(--mut)}.pre{white-space:pre-wrap;word-break:break-word}code{background:var(--in);padding:3px 8px;border-radius:8px;font-size:13px;word-break:break-all;border:1px solid var(--line)}
-details summary{cursor:pointer;font-weight:600}details>*:not(summary){margin-top:10px}
-.tag{font-size:12px;font-weight:600;padding:3px 10px;border-radius:99px;border:1px solid var(--line);background:var(--in);display:inline-flex;align-items:center;gap:4px}
-.tag.ok{color:var(--ok);border-color:rgba(52,211,153,.35);background:rgba(52,211,153,.08)}
-.tag.no{color:var(--bad);border-color:rgba(248,113,113,.35);background:rgba(248,113,113,.08)}
-.tag.attente,.tag.form{color:var(--warn);border-color:rgba(251,191,36,.35);background:rgba(251,191,36,.08)}
-.tag.rank{color:var(--acc);border-color:rgba(56,189,248,.35);background:rgba(56,189,248,.08)}
-.hero{position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:26px 28px;border-radius:20px;border:1px solid rgba(56,189,248,.25);background:linear-gradient(135deg,rgba(56,189,248,.18),rgba(99,102,241,.12));margin-bottom:18px;box-shadow:var(--sh)}
-.hero:after{content:'🛡️';position:absolute;right:10px;top:-10px;font-size:130px;opacity:.06;pointer-events:none}
-.hero h1{margin:.1em 0;font-size:32px;font-weight:800;letter-spacing:-.02em}
-.hero p{margin:0}
-.pts{text-align:center;z-index:1;background:rgba(10,16,30,.4);padding:12px 20px;border-radius:16px;border:1px solid rgba(56,189,248,.2)}
-.pts b{display:block;font-size:40px;font-weight:800;line-height:1;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;background-clip:text;color:transparent}
-.pts span{color:var(--mut);font-size:13px;font-weight:500}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px}
-.stats div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--sh);transition:transform .12s ease}
-.stats div:hover{transform:translateY(-2px);border-color:rgba(56,189,248,.25)}
-.stats i{font-style:normal;font-size:22px}
-.stats b{display:block;font-size:26px;font-weight:800;line-height:1.2;margin:4px 0}
-.stats span{color:var(--mut);font-size:13px}
-.note{border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:12px;padding:12px 16px;background:var(--card)}
-.flash{border-color:var(--acc);box-shadow:0 0 0 3px rgba(56,189,248,.2)}
-.log{padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
-fieldset{border:0;padding:0;margin:0 0 14px}legend{font-weight:700;margin-bottom:6px}.opt{display:flex;gap:8px;align-items:center;margin:0 0 6px;color:var(--ink);cursor:pointer}.opt input{width:auto;margin:0}
-.chip{padding:6px 14px;border:1px solid var(--line);border-radius:99px;background:var(--in);margin:0;font-size:13px}
-.rich img,.rich video{max-width:100%;border-radius:12px;display:block;margin:8px 0}.rich iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:12px}.rich figure{margin:12px 0}.rich figcaption{font-size:13px}.rich p{margin:.4em 0}.rich a{color:var(--acc)}
+
+/* Inputs */
+input,select,textarea{font:inherit;width:100%;padding:11px 16px;border:1px solid var(--line);border-radius:12px;background:var(--in);color:var(--ink);transition:all .2s cubic-bezier(.16,1,.3,1)}
+input:focus,select:focus,textarea:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(56,189,248,.1),0 4px 16px rgba(56,189,248,.06);outline:none}
+input::placeholder,textarea::placeholder{color:var(--mut);opacity:.6}
+label{display:block;margin:0 0 16px;color:var(--mut);font-size:13.5px;font-weight:600;letter-spacing:.01em}label input,label select,label textarea{margin-top:7px}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin:0 0 16px;box-shadow:var(--sh);backdrop-filter:blur(12px) saturate(1.2);-webkit-backdrop-filter:blur(12px) saturate(1.2);transition:all .25s cubic-bezier(.16,1,.3,1);position:relative}
+.card::before{content:'';position:absolute;inset:0;border-radius:18px;background:linear-gradient(135deg,var(--glow),var(--glow2));pointer-events:none;opacity:0;transition:opacity .25s}
+.card:hover{border-color:rgba(56,189,248,.18);transform:translateY(-1px);box-shadow:var(--sh),0 0 40px rgba(56,189,248,.04)}
+.card:hover::before{opacity:1}
+
+.row{display:flex;gap:14px;align-items:flex-end}.row>*{flex:1}.row button{flex:0 0 auto;margin-bottom:16px}
+.top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.acts select{width:auto}
+.mut{color:var(--mut)}.pre{white-space:pre-wrap;word-break:break-word}
+code{background:var(--in);padding:4px 10px;border-radius:8px;font-size:12.5px;word-break:break-all;border:1px solid var(--line);font-family:'SF Mono',Consolas,monospace}
+details summary{cursor:pointer;font-weight:600;transition:color .15s}
+details summary:hover{color:var(--acc)}
+details>*:not(summary){margin-top:12px}
+
+/* Tags */
+.tag{font-size:11.5px;font-weight:700;padding:4px 12px;border-radius:99px;border:1px solid var(--line);background:var(--in);display:inline-flex;align-items:center;gap:4px;letter-spacing:.01em}
+.tag.ok{color:var(--ok);border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.08)}
+.tag.no{color:var(--bad);border-color:rgba(251,113,133,.3);background:rgba(251,113,133,.08)}
+.tag.attente,.tag.form{color:var(--warn);border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.08)}
+.tag.rank{color:var(--acc);border-color:rgba(56,189,248,.3);background:rgba(56,189,248,.06)}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center;gap:24px;padding:30px 32px;border-radius:22px;border:1px solid rgba(56,189,248,.2);background:linear-gradient(135deg,rgba(56,189,248,.12),rgba(129,140,248,.08));margin-bottom:20px;box-shadow:var(--sh),0 0 60px rgba(56,189,248,.04) inset}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 300px 200px at 80% 20%,rgba(56,189,248,.1),transparent);pointer-events:none;animation:heroGlow 6s ease-in-out infinite alternate}
+@keyframes heroGlow{0%{opacity:.5}100%{opacity:1}}
+.hero::after{content:'🛡️';position:absolute;right:16px;top:-12px;font-size:140px;opacity:.04;pointer-events:none;filter:blur(1px)}
+.hero h1{margin:.1em 0;font-size:34px;font-weight:900;letter-spacing:-.03em;position:relative}
+.hero p{margin:0;position:relative}
+.pts{text-align:center;z-index:1;background:rgba(8,14,28,.5);padding:14px 24px;border-radius:16px;border:1px solid rgba(56,189,248,.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.pts b{display:block;font-size:42px;font-weight:900;line-height:1;background:linear-gradient(135deg,#38bdf8,#818cf8,#c084fc);background-size:200% 200%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:ptShine 4s ease-in-out infinite}
+@keyframes ptShine{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.pts span{color:var(--mut);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:20px}
+.stats div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--sh);transition:all .2s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden}
+.stats div::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--acc),var(--acc2));opacity:.5;border-radius:16px 16px 0 0}
+.stats div:hover{transform:translateY(-3px);border-color:rgba(56,189,248,.2);box-shadow:var(--sh),0 0 30px rgba(56,189,248,.05)}
+.stats i{font-style:normal;font-size:24px}
+.stats b{display:block;font-size:28px;font-weight:900;line-height:1.2;margin:6px 0 2px}
+.stats span{color:var(--mut);font-size:12.5px;font-weight:500}
+
+/* Notes */
+.note{border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:14px;padding:14px 18px;background:var(--card);font-size:14px;line-height:1.6}
+.flash{border-color:var(--acc);box-shadow:0 0 0 3px rgba(56,189,248,.12),0 0 20px rgba(56,189,248,.06)}
+.log{padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}
+fieldset{border:0;padding:0;margin:0 0 14px}legend{font-weight:700;margin-bottom:8px}
+.opt{display:flex;gap:10px;align-items:center;margin:0 0 8px;color:var(--ink);cursor:pointer;font-size:14px}.opt input{width:auto;margin:0;accent-color:var(--acc)}
+.chip{padding:7px 16px;border:1px solid var(--line);border-radius:99px;background:var(--in);margin:0;font-size:13px;transition:all .15s ease}
+.chip:hover{border-color:rgba(56,189,248,.25);background:rgba(56,189,248,.04)}
+
+/* Rich content */
+.rich img,.rich video{max-width:100%;border-radius:14px;display:block;margin:10px 0}.rich iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:14px}.rich figure{margin:14px 0}.rich figcaption{font-size:13px;color:var(--mut)}.rich p{margin:.5em 0}.rich a{color:var(--acc);text-decoration:none;border-bottom:1px solid rgba(56,189,248,.3);transition:border-color .15s}.rich a:hover{border-color:var(--acc)}
+
+/* Login */
 .login{min-height:100vh;display:grid;place-items:center;padding:16px;max-width:none;margin:0}
-.glass{width:100%;max-width:390px;text-align:center;background:var(--card);border:1px solid rgba(56,189,248,.25);border-radius:24px;padding:34px 26px;box-shadow:var(--sh);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
-.glass h1{margin:.1em 0;font-size:28px}
+.glass{width:100%;max-width:400px;text-align:center;background:var(--card);border:1px solid rgba(56,189,248,.2);border-radius:28px;padding:40px 30px;box-shadow:var(--sh),0 0 80px rgba(56,189,248,.06);backdrop-filter:blur(24px) saturate(1.3);-webkit-backdrop-filter:blur(24px) saturate(1.3);position:relative;overflow:hidden}
+.glass::before{content:'';position:absolute;inset:-2px;border-radius:30px;background:conic-gradient(from 0deg,var(--acc),var(--acc2),rgba(192,132,252,.5),var(--acc));padding:2px;z-index:-1;animation:borderSpin 6s linear infinite;opacity:.3}
+@keyframes borderSpin{to{filter:hue-rotate(360deg)}}
+.glass .logo.big{font-size:52px;margin-bottom:8px;filter:drop-shadow(0 4px 16px rgba(56,189,248,.3));animation:loginPulse 3s ease-in-out infinite}
+@keyframes loginPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.glass h1{margin:.1em 0 .3em;font-size:30px;font-weight:900}
 .glass label{text-align:left}
-.glass button{width:100%;margin-top:10px;padding:12px}
+.glass button{width:100%;margin-top:12px;padding:13px;font-size:15px}
 .bad{color:var(--bad)}
-#t{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:rgba(15,23,42,.95);color:var(--ink);border:1px solid var(--acc);padding:10px 22px;border-radius:99px;box-shadow:0 12px 36px rgba(0,0,0,.5);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw;z-index:99;font-weight:600;font-size:14px}#t.on{opacity:1}
+
+/* Toast */
+#t{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:rgba(10,16,30,.92);color:var(--ink);border:1px solid rgba(56,189,248,.3);padding:12px 26px;border-radius:14px;box-shadow:0 16px 48px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.04) inset;backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);opacity:0;pointer-events:none;transition:all .35s cubic-bezier(.16,1,.3,1);max-width:90vw;z-index:99;font-weight:600;font-size:14px}
+#t.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
 @media(max-width:560px){.row{flex-direction:column;align-items:stretch}.row button{margin-bottom:0}.hero{flex-direction:column;align-items:flex-start}}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(120,150,190,.2);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:rgba(120,150,190,.35)}
+
+/* Selection */
+::selection{background:rgba(56,189,248,.25);color:var(--ink)}
+
+/* List style */
+ul{padding-left:18px;margin:.5em 0}
+li{margin:4px 0;font-size:14px;line-height:1.55}
+li::marker{color:var(--acc)}
 </style></head>
 <body><div id="app"></div><div id="t" role="status"></div>
 <script id="main">
@@ -142,7 +210,7 @@ dash(){const w=S.rcs.filter(r=>r.v=='attente').length,f=S.rcs.filter(r=>r.v=='ok
  return `${warns()}<div class="hero"><div><span class="mut">Bienvenue</span><h1>${e(me.name)}</h1><p class="mut">${e(S.cfg.name)}</p></div><div class="pts"><b>${tot(myu())}</b><span>points</span></div></div>
 ${S.cfg.home?`<div class="card rich">${rich(S.cfg.home)}</div>`:''}${tut('Accueil')}
 <div class="stats">${can('hg')||can('dec')?`<div><i>📥</i><b>${w}</b><span>candidatures en attente</span></div><div><i>🎓</i><b>${f.length}</b><span>en attente de formation</span></div>`:''}<div><i>📝</i><b>${S.crs.length}</b><span>comptes rendus</span></div><div><i>🏅</i><b>${e(me.rank)}</b><span>ton rang</span></div></div>
-${(can('hg')||can('dec'))&&f.length?`<div class="note">En attente de formation : ${f.map(r=>e(r.cand)).join(', ')}</div><p></p>`:''}<p class="note">Le compte rendu est obligatoire chaque samedi avant 22h00, sous peine de sanction.${S.cfg.reset&&S.cfg.reset.on?' Les points du profil repartent à 0 chaque dimanche à 00h00 (fin du samedi, heure de '+e(S.cfg.reset.tz)+').':''}</p>`},
+${(can('hg')||can('dec'))&&f.length?`<div class="note">En attente de formation : ${f.map(r=>e(r.cand)).join(', ')}</div><p></p>`:''}<p class="note">Les comptes rendus sont à rendre une fois par semaine, le samedi (dépôt ouvert dès le vendredi 23h59). Le classement se met à jour quand les comptes rendus sont clos et reste figé jusqu'au samedi d'après.${S.cfg.reset&&S.cfg.reset.on?' Remise à zéro des points des profils chaque dimanche à 00h00 (heure de '+e(S.cfg.reset.tz)+').':''}</p>`},
 rc(){const today=new Date().toISOString().slice(0,10);let i=0;
  const qs=S.cfg.rq.map((l,j)=>l.startsWith('##')?`<h3>${e(l.replace(/^#+\s*/,''))}</h3>`:`<label>Question ${++i} : ${e(l)}<textarea name="a${j}" rows="2" placeholder="Réponse"></textarea></label>`).join('');
  return `<h2>Recrutement</h2>${tut('Recrutement')}<form class="card" onsubmit="addRc(event)"><h3>Nouvel entretien</h3><div class="row"><label>Candidat (pseudo)<input name="cand" required></label><label>ID Discord<input name="did" inputmode="numeric"></label></div><div class="row"><label>Date de l’entretien<input type="date" name="date" value="${today}"></label><label>Réalisé par<input name="by" value="${e(me.name)}"></label></div><label>Supervisé par<input name="sup"></label>${qs}<button>Enregistrer et envoyer le rapport d’entretien</button></form>
@@ -153,9 +221,46 @@ team(){const fl=flash?`<div class="card flash"><b>Code de ${e(flash.name)}</b><d
 ${can('pts')?`<form class="card" onsubmit="bulk(event)"><h3>Points en masse</h3><div class="row"><label>Points (négatif pour retirer)<input name="v" type="number" step="any" required></label><label>Motif ou mission<input name="w" required></label></div><p class="mut">Tous les membres d’un rang :</p><div class="acts">${S.cfg.ranks.map(r=>`<label class="opt chip"><input type="checkbox" name="rk" value="${e(r)}">${e(r)}</label>`).join('')}</div><p class="mut">Et/ou des membres précis :</p><div class="acts">${S.users.map(u=>`<label class="opt chip"><input type="checkbox" name="id" value="${u.id}">${e(u.name)}</label>`).join('')}</div><p></p><button>Ajouter les points aux personnes sélectionnées</button></form>`:''}<div class="search-list">${PAGES.team_list()}</div>`},
 team_list(){return S.users.filter(u=>mt(u.name)||mt(u.rank)||mt(u.did)).map(uCard).join('')||'<p class="mut">Aucun résultat.</p>'},
 cr(){const u=myu(),fields=s=>S.cfg.stats.map((x,i)=>x.s==s&&(!x.rec||me.rec)?`<label>${x.e.startsWith('<')?'':e(x.e)} ${e(x.l)}<input type="number" name="s${i}" min="0" step="any" value="0"></label>`:'').join('');
- const isClosed=(S.crClosedDays||[]).includes(today());
- const founderCard=can('founder')?`<div class="card" style="border:1px solid rgba(76,201,240,.4);background:linear-gradient(135deg,rgba(76,201,240,.12),rgba(58,134,255,.06))"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><div><div style="display:flex;align-items:center;gap:8px"><span style="font-size:22px">👑</span><b style="font-size:17px;color:var(--acc)">Gestion Fondateur – Clôture des comptes rendus</b>${isClosed?'<span class="tag no">Clôturé pour aujourd’hui</span>':'<span class="tag ok">Ouvert</span>'}</div><p class="mut" style="margin:4px 0 0;font-size:14px">Ferme les réceptions du ${fd(today())}, actualise le classement et envoie le rapport des absents sur Discord.</p></div><div class="acts" style="margin:0">${isClosed?`<button type="button" class="ghost" onclick="reopenCrDay()">🔓 Réouvrir</button>`:''}<button type="button" style="background:linear-gradient(135deg,#e63946,#d90429);color:#fff" onclick="closeCrDay()">${isClosed?'🔄 Réactualiser l’annonce Discord':'🔒 Fermer les comptes rendus du jour'}</button></div></div></div>`:'';
- return `<h2>Comptes rendus</h2>${founderCard}${tut('Comptes rendus')}${isClosed?`<div class="note" style="border-left-color:var(--bad);margin-bottom:14px">🔒 <b>Comptes rendus clôturés :</b> Les comptes rendus pour aujourd’hui (${fd(today())}) sont désormais fermés par la direction.</div>`:''}<form class="card" oninput="calc(this)" onsubmit="addCr(event)"><div class="row"><label>Pseudo<input name="pseudo" value="${e(me.name)}"></label><label>ID Discord<input name="did" value="${e(me.did||'')}"></label></div><h3>Activité principale</h3>${fields('main')}<div class="row"><label>Autres activités effectuées<input name="ot"></label><label>Points accordés<input type="number" name="op" step="any" value="0"></label></div><h3>Activité secondaire</h3>${fields('sec')}<h3>Point de vue</h3><label>Problèmes rencontrés sur le serveur, si oui lesquels ?<textarea name="prob" rows="2"></textarea></label><label>Améliorations suggérées<textarea name="amel" rows="2"></textarea></label><label>Ping supérieurs hiérarchiques<input name="ping"></label><h3>Activité Shibuya (optionnel)</h3><label>Vos statistiques<input name="shib"></label><label>Votre TikTok et Twitter<input name="tt"></label><p class="note">Justificatifs obligatoires : toutes les stats doivent être prouvées et documentées dans le serveur « Stats Gestion Sécurité » et dans les channels prévus.</p><p class="note" id="tot"></p>${isClosed?'<button type="button" disabled style="opacity:.6;cursor:not-allowed">🔒 Comptes rendus fermés pour aujourd’hui</button>':'<button>Envoyer le compte rendu</button>'}</form>
+ const crSt = S.crStatus || { open: false, isClosed: false, inWindow: false, satDate: today(), nextOpenFri: today(), reason: '' };
+ const alreadySent = S.crs.find(c => c.date === crSt.satDate && (c.uid === me.id || c.by.toLowerCase() === me.name.toLowerCase()));
+ const founderCard = can('founder') ? `
+<div class="card" style="border:1px solid rgba(76,201,240,.4);background:linear-gradient(135deg,rgba(76,201,240,.12),rgba(58,134,255,.06));margin-bottom:18px">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:22px">👑</span>
+        <b style="font-size:17px;color:var(--acc)">Gestion Fondateur – Clôture des comptes rendus</b>
+        ${crSt.open ? '<span class="tag ok">🟢 Ouvert aux membres</span>' : '<span class="tag no">🔒 Clôturé / Fermé</span>'}
+      </div>
+      <p class="mut" style="margin:4px 0 0;font-size:14px">Session du <b>samedi ${fd(crSt.satDate)}</b>. La clôture actualise immédiatement le classement officiel, le fige jusqu'au samedi suivant et notifie les retardataires sur Discord.</p>
+    </div>
+    <div class="acts" style="margin:0">
+      ${!crSt.open ? `<button type="button" class="ghost" onclick="reopenCrDay()">🔓 Ouvrir / Réouvrir</button>` : ''}
+      ${crSt.open ? `<button type="button" style="background:linear-gradient(135deg,#e63946,#d90429);color:#fff" onclick="closeCrDay()">🔒 Fermer et actualiser le classement</button>` : ''}
+    </div>
+  </div>
+</div>` : '';
+
+ let statusBanner = '';
+ if (!crSt.open) {
+   if (crSt.isClosed) {
+     statusBanner = `<div class="card" style="border-left:4px solid var(--bad);background:rgba(230,57,70,.08);margin-bottom:16px"><div style="display:flex;align-items:center;gap:12px"><span style="font-size:26px">🔒</span><div><b style="color:var(--bad)">Comptes rendus clôturés</b><p class="mut" style="margin:2px 0 0;font-size:14px">Les comptes rendus pour le <b>samedi ${fd(crSt.satDate)}</b> sont désormais clôturés par la direction. Le classement a été actualisé et reste figé jusqu'au samedi suivant.</p></div></div></div>`;
+   } else {
+     statusBanner = `<div class="card" style="border-left:4px solid var(--acc);background:rgba(76,201,240,.08);margin-bottom:16px"><div style="display:flex;align-items:center;gap:12px"><span style="font-size:26px">⏳</span><div><b style="color:var(--acc)">Dépôt des comptes rendus actuellement fermé</b><p class="mut" style="margin:2px 0 0;font-size:14px">Les comptes rendus sont à rendre une fois par semaine, le samedi. L'option de dépôt ouvre chaque <b>vendredi à 23h59</b>.<br>Prochaine ouverture : <b>vendredi ${fd(crSt.nextOpenFri)} à 23h59</b>.</p></div></div></div>`;
+   }
+ } else if (alreadySent && !can('founder')) {
+   statusBanner = `<div class="card" style="border-left:4px solid var(--ok);background:rgba(46,184,114,.08);margin-bottom:16px"><div style="display:flex;align-items:center;gap:12px"><span style="font-size:26px">✅</span><div><b style="color:var(--ok)">Compte rendu validé pour cette semaine</b><p class="mut" style="margin:2px 0 0;font-size:14px">Tu as déjà soumis ton compte rendu pour la session du <b>samedi ${fd(crSt.satDate)}</b> (<b>${alreadySent.total} pts</b>). Le classement sera mis à jour à la clôture samedi soir.</p></div></div></div>`;
+ } else {
+   statusBanner = `<div class="card" style="border-left:4px solid var(--ok);background:rgba(46,184,114,.08);margin-bottom:16px"><div style="display:flex;align-items:center;gap:12px"><span style="font-size:26px">📝</span><div><b style="color:var(--ok)">Dépôt des comptes rendus ouvert</b><p class="mut" style="margin:2px 0 0;font-size:14px">Session du <b>samedi ${fd(crSt.satDate)}</b> (à rendre une fois par semaine). Remplis le formulaire ci-dessous. Le classement restera figé jusqu'à la clôture.</p></div></div></div>`;
+ }
+
+ const submitBtn = !crSt.open ?
+   `<button type="button" disabled style="opacity:.6;cursor:not-allowed">🔒 Comptes rendus fermés (ouverture vendredi 23h59)</button>` :
+   (alreadySent && !can('founder') ?
+     `<button type="button" disabled style="opacity:.6;cursor:not-allowed">✅ Compte rendu déjà envoyé pour cette semaine</button>` :
+     `<button>Envoyer le compte rendu</button>`);
+
+ return `<h2>Comptes rendus</h2>${founderCard}${tut('Comptes rendus')}${statusBanner}<form class="card" oninput="calc(this)" onsubmit="addCr(event)"><div class="row"><label>Pseudo<input name="pseudo" value="${e(me.name)}"></label><label>ID Discord<input name="did" value="${e(me.did||'')}"></label></div><h3>Activité principale</h3>${fields('main')}<div class="row"><label>Autres activités effectuées<input name="ot"></label><label>Points accordés<input type="number" name="op" step="any" value="0"></label></div><h3>Activité secondaire</h3>${fields('sec')}<h3>Point de vue</h3><label>Problèmes rencontrés sur le serveur, si oui lesquels ?<textarea name="prob" rows="2"></textarea></label><label>Améliorations suggérées<textarea name="amel" rows="2"></textarea></label><label>Ping supérieurs hiérarchiques<input name="ping"></label><h3>Activité Shibuya (optionnel)</h3><label>Vos statistiques<input name="shib"></label><label>Votre TikTok et Twitter<input name="tt"></label><p class="note">Justificatifs obligatoires : toutes les stats doivent être prouvées et documentées dans le serveur « Stats Gestion Sécurité » et dans les channels prévus.</p><p class="note" id="tot"></p>${submitBtn}</form>
  ${SB('Rechercher un compte rendu (pseudo, date, texte…)')}<div class="search-list">${PAGES.cr_list()}</div>`},
 cr_list(){return S.crs.filter(c=>mt(c.by)||mt(c.date)||mt(c.total)||mt(c.txt)).map(c=>`<div class="card"><div class="top" style="justify-content:space-between"><div><b>${fd(c.date)}</b> — <b>${e(c.by)}</b> ${c.rank?`<span class="tag rank">${e(c.rank)}</span>`:''} <span class="tag">${c.total} pts</span></div>${c.decision?`<span class="tag ${c.decision.d=='up'?'ok':c.decision.d=='derank'?'no':'attente'}">${c.decision.d=='up'?'✅ Rank up':c.decision.d=='derank'?'⚠️ Derank':'⚖️ Stagné'} (par ${e(c.decision.by)})</span>`:''}</div><details style="margin-top:10px"><summary>Voir le détail du compte rendu</summary><p class="pre">${e(c.txt.replace(/<a?:\w+:\d+>/g,''))}</p></details>${can('hg')?`<div class="acts" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line);align-items:center"><span class="mut" style="font-size:13px;font-weight:600">Décision Discord :</span><button type="button" style="background:#2eb872;color:#fff;padding:6px 14px;font-size:13px;border-radius:8px" onclick="setDecision('${c.id}','up')">⬆️ Rank up</button><button type="button" style="background:#f39c12;color:#fff;padding:6px 14px;font-size:13px;border-radius:8px" onclick="setDecision('${c.id}','stagne')">➡️ Stagne</button><button type="button" style="background:#e74c3c;color:#fff;padding:6px 14px;font-size:13px;border-radius:8px" onclick="setDecision('${c.id}','derank')">⬇️ Derank</button></div>`:''}</div>`).join('')||'<p class="mut">Aucun résultat.</p>'},
 quiz(){const u=myu(),z=S.cfg.quizzes.find(x=>x.id==qid);
@@ -165,11 +270,11 @@ quiz_list(){const u=myu();return S.cfg.quizzes.filter(z=>mt(z.t)).map(z=>`<div c
 logs(){return `<h2>Logs</h2><div class="acts">${[['','Tout'],...Object.entries(LT)].map(f=>`<button class="${lf==f[0]?'':'ghost'}" onclick="lf='${f[0]}';render()">${f[1]}</button>`).join('')}</div><p></p>${SB('Rechercher dans les logs…')}<div class="search-list">${PAGES.logs_list()}</div>`},
 logs_list(){return S.logs.filter(l=>!lf||l.t==lf).filter(l=>mt(l.by)||mt(l.x)).map(l=>`<div class="log"><span class="mut">${new Date(l.d).toLocaleString('fr-FR')}</span> <span class="tag">${LT[l.t]||l.t}</span> <b>${e(l.by)}</b> ${e(l.x)}</div>`).join('')||'<p class="mut">Aucun résultat.</p>'},
 lb(){const lb=S.lb;const MED=['🥇','🥈','🥉'];const BG=['linear-gradient(135deg,#f7c948,#e6a000)','linear-gradient(135deg,#c8d6e0,#8fa8b8)','linear-gradient(135deg,#d4905a,#a05a28)'];const TC=['#7a5500','#3a5060','#5a2800'];const HH=[130,100,75];
- if(!lb||!lb.entries||!lb.entries.length)return `<h2>🏆 Classement</h2><div class="card" style="text-align:center;padding:48px 24px"><div style="font-size:56px;margin-bottom:12px">🏆</div><b>Aucun classement disponible</b><p class="mut">Le classement des comptes rendus apparaîtra ici chaque dimanche après la remise à zéro hebdomadaire.<br>Il restera figé toute la semaine jusqu'au dimanche suivant.</p></div>`;
+ if(!lb||!lb.entries||!lb.entries.length)return `<h2>🏆 Classement</h2><div class="card" style="text-align:center;padding:48px 24px"><div style="font-size:56px;margin-bottom:12px">🏆</div><b>Aucun classement disponible</b><p class="mut">Le classement des comptes rendus se met à jour quand les comptes rendus sont clos le samedi.<br>Il reste ensuite figé toute la semaine jusqu'au samedi d'après.</p></div>`;
  const top3=lb.entries.slice(0,3),rest=lb.entries.slice(3),wk=fd(lb.weekOf);
  const podium=top3.map((en,i)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:6px;order:${i===0?2:i===1?1:3};flex:1;max-width:180px"><div style="font-size:40px">${MED[i]}</div><div style="font-weight:700;font-size:15px;text-align:center;word-break:break-word">${e(en.name)}</div><span class="tag rank" style="font-size:12px">${e(en.rank)}</span><div style="font-size:22px;font-weight:700;color:var(--acc)">${en.total}<span style="font-size:13px;font-weight:400;color:var(--mut)"> pts</span></div><div style="width:100%;min-width:80px;height:${HH[i]}px;border-radius:12px 12px 0 0;background:${BG[i]};display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:${TC[i]}">${i+1}</div></div>`).join('');
  const rows=rest.map((en,i)=>`<div class="card" style="display:flex;align-items:center;gap:14px;padding:12px 18px;margin-bottom:8px"><span style="font-size:20px;font-weight:700;color:var(--mut);width:28px;text-align:center">${i+4}</span><div style="flex:1"><b>${e(en.name)}</b> <span class="tag rank">${e(en.rank)}</span></div><b style="font-size:18px">${en.total}<span class="mut" style="font-size:13px;font-weight:400"> pts</span></b></div>`).join('');
- return `<h2>🏆 Classement – Semaine du ${wk}</h2><p class="mut" style="margin-bottom:20px">Comptes rendus de la semaine. Le classement se fige le dimanche et se remet à jour la semaine suivante.</p><div class="card" style="padding:24px 16px"><div style="display:flex;align-items:flex-end;justify-content:center;gap:12px">${podium}</div></div><p></p>${rows}`;},
+ return `<h2>🏆 Classement – Semaine du ${wk}</h2><p class="mut" style="margin-bottom:20px">Classement officiel des comptes rendus. Ce classement se met à jour quand les comptes rendus sont clos et reste figé jusqu'au samedi d'après.${lb.closedAt?` <span style="font-size:13px;opacity:.8">(Clôturé le ${new Date(lb.closedAt).toLocaleDateString('fr-FR')} ${lb.closedBy?'par '+e(lb.closedBy):''})</span>`:''}</p><div class="card" style="padding:24px 16px"><div style="display:flex;align-items:flex-end;justify-content:center;gap:12px">${podium}</div></div><p></p>${rows}`;},
 tuto(){return `<h2>Tutoriels</h2>${SB('Rechercher un tutoriel…')}<div class="search-list">${PAGES.tuto_list()}</div>${can('set')?'<p class="note">Pour ajouter ou modifier un tutoriel, avec images et vidéos : Réglages, section Tutoriels.</p>':''}`},
 tuto_list(){return S.cfg.tutos.filter(t=>mt(t.t)||mt(t.b)).map(t=>`<details class="card"><summary>${e(t.t)}</summary><div class="rich">${rich(t.b)}</div></details>`).join('')||'<p class="mut">Aucun résultat.</p>'},
 set(){const c=S.cfg,h=c.hooks,H=(k,l)=>`<label>${l}<span class="row"><input id="h_${k}" value="${e(h[k])}" placeholder="https://discord.com/api/webhooks/..." autocomplete="off"><button type="button" class="ghost" style="margin:0" onclick="testHook('${k}')">Tester</button></span></label>`,
@@ -236,8 +341,8 @@ function backupNow(){api('POST','backup-now',{}).then(j=>j&&toast('Sauvegarde en
 function resetNow(){conf('rz',()=>act('POST','reset-now',{},'Points remis à zéro'))}
 function restore(){const f=$('#rf').files[0];if(!f){toast('Choisis un fichier de sauvegarde');return}conf('rs',async()=>{const j=await api('POST','restore',{data:await f.text()});if(j){S=null;me=null;render();toast('Sauvegarde restaurée : reconnecte-toi')}})}
 async function setDecision(id,d){const lbl={up:'Rank up',stagne:'Stagne',derank:'Derank'};if(!confirm(`Confirmer la décision « ${lbl[d]} » pour ce compte rendu ?\nUn message sera envoyé dans le salon Discord.`))return;await act('POST','cr/'+id+'/decision',{d},'Décision « '+lbl[d]+' » envoyée sur Discord !')}
-async function closeCrDay(){if(!confirm('Es-tu sûr de vouloir fermer les comptes rendus pour aujourd’hui ?\n\n• Le classement de la semaine sera immédiatement mis à jour.\n• Un embed avec la liste des membres n’ayant pas rendu leur CR sera envoyé sur Discord.'))return;const j=await act('POST','cr/close-day',{},'Comptes rendus clôturés et rapport envoyé sur Discord !');if(j&&j.missingCount!=null)toast(`Clôturé : ${j.missingCount} retardataire(s) notifié(s) sur Discord`)}
-async function reopenCrDay(){if(!confirm('Réouvrir les comptes rendus pour aujourd’hui ?'))return;await act('POST','cr/reopen-day',{},'Comptes rendus réouverts pour aujourd’hui')}
+async function closeCrDay(){if(!confirm('Es-tu sûr de vouloir clôturer les comptes rendus de cette semaine ?\n\n• Le classement hebdomadaire sera immédiatement actualisé et restera figé jusqu’au samedi d’après.\n• La liste des membres n’ayant pas rendu leur compte rendu sera envoyée sur Discord.'))return;const j=await act('POST','cr/close-day',{},'Comptes rendus clôturés et classement actualisé !');if(j&&j.missingCount!=null)toast(`Clôturé : ${j.missingCount} retardataire(s) notifié(s) sur Discord`)}
+async function reopenCrDay(){if(!confirm('Réouvrir les comptes rendus pour cette session ?'))return;await act('POST','cr/reopen-day',{},'Comptes rendus réouverts')}
 function cp(t){navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>toast('Copié'),()=>toast('Copie impossible'))}
 async function bulk(ev){ev.preventDefault();const f=new FormData(ev.target),j=await act('POST','points-bulk',{v:Number(f.get('v')),w:f.get('w'),ranks:f.getAll('rk'),ids:f.getAll('id')});if(j)toast(j.n+' membre(s) ont reçu les points')}
 async function upMedia(){const f=$('#mf').files[0];if(!f){toast('Choisis un fichier');return}if(f.size>15e6){toast('Fichier trop lourd (15 Mo maximum)');return}
