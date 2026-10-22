@@ -12,6 +12,22 @@ const DR = ["Test", "Owner", "Confirmé", "Senior", "Certifié", "Chef", "Bras D
 const DRQ = ["## Questions générales :", "Demander au candidat de se présenter rapidement (âge, motivations, loisirs)", "Qu’est-ce que la gestion GSS selon toi ?", "Quelles qualités te semblent indispensables pour occuper le poste de gestion Sécurité ?", "Qu’est-ce que tu pourrais apporter de plus qu’un autre candidat ?", "As-tu de l’expérience sur les réseaux sociaux (poste-t-il des TikTok, vidéos YouTube ou a-t-il de l’expérience en montage vidéo) ?", "As-tu de l’expérience sur discord (Gestion, Staff..) ?", "As-tu des conflits avec des owners ou des hauts staffs sur Shibuya ?", "Combien de temps penses-tu rester en gestion Sécurité ?", "As-tu déjà effectué de la modération ?", "As-tu de l’expérience en tant que grabbeur ?", "As-tu de l’expérience en tant que jaileur ?", "## Questions de mise en situation", "Tu dois poster un TikTok aujourd’hui mais tu manques d’idées. Que fais-tu ?", "Tu rencontres un membre qui t’insulte en vocal, que fais-tu ?", "Si tu es pris(e), quels sont tes objectifs au sein de la Gestion Sécurité ?", "Es-tu en possession d’un ordinateur ?", "Un membre effectue une action étant un motif de ban, que fais-tu ?", "Tu as un conflit avec un haut staff ou un autre gestion, que fais-tu ?"];
 // Barème officiel Gestion Sécurité : points par unité (1000 vues = 10 points, soit 0,01 par vue).
 const DST = [{ s: 'main', e: '<:emoji_113:1518005433590354072>', l: 'Nombre de vidéos tiktok réalisées', p: 5 }, { s: 'main', e: '<:emoji_114:1518005438694559785>', l: 'Nombre de tweet réalisées', p: 5 }, { s: 'main', e: '👀', l: 'Nombre de vues totales réalisées', p: 0.01 }, { s: 'main', e: '📝', l: 'Nombre de commentaires réalisées', p: 3 }, { s: 'main', e: '<:blurpleshield:1400686608268922880>', l: 'Nombre de jail réalisés', p: 6 }, { s: 'main', e: '<:blurpleshield:1400686608268922880>', l: 'Nombre de jail top 5 réalisés', p: 10 }, { s: 'main', e: '📈', l: 'Nombre stat-modération réalisés', p: 3 }, { s: 'main', e: '👥', l: 'Nombre de rank / dérank / staff réalisés', p: 3 }, { s: 'main', e: '💷', l: 'Nombre de contributeurs trouvés', p: 15 }, { s: 'main', e: '💷', l: 'Nombre de pub contri réalisées', p: 5 }, { s: 'sec', e: '👀', l: 'Nombre de grab bataillon réalisés', p: 5 }, { s: 'sec', e: '👀', l: 'Nombre de grab RC réalisés', p: 10 }, { s: 'sec', e: '📶', l: 'Nombre d’entretiens réalisés', p: 5, rec: 1 }, { s: 'sec', e: '📝', l: 'Nombre de formations réalisées', p: 10, rec: 1 }];
+const DUS = [
+  {
+    name: 'Unité Navale',
+    overrides: [
+      { l: 'Nombre de grab bataillon réalisés', idx: 10, p: 8 },
+      { l: 'Nombre de grab RC réalisés', idx: 11, p: 12 }
+    ]
+  },
+  {
+    name: 'Unité Prison School',
+    overrides: [
+      { l: 'Nombre de jail réalisés', idx: 4, p: 8 },
+      { l: 'Nombre de jail top 5 réalisés', idx: 5, p: 12 }
+    ]
+  }
+];
 const BQ = { id: 'bareme-des-points', t: 'Barème des points', q: [["Combien de points rapportent 1000 vues ?", ["5 points", "10 points", "15 points"], 1], ["Combien de points rapporte un grab RC ?", ["5 points", "10 points", "15 points"], 1], ["Combien de points rapporte une contri ?", ["10 points", "15 points", "20 points"], 1], ["Combien de points rapporte une formation ?", ["5 points", "10 points", "15 points"], 1], ["Où les stats doivent-elles être prouvées ?", ["Dans le serveur « Stats Gestion Sécurité » et les channels prévus", "Nulle part", "En message privé"], 0]] };
 const DQZ = [
   { id: 'bases-de-la-gestion-securite', t: 'Bases de la gestion Sécurité', q: [["Où doit-on déposer son compte rendu ?", ["Dans son salon personnalisé", "En message privé à un HG", "Dans le salon général"], 0], ["Quand le compte rendu doit-il être remis ?", ["Chaque samedi (dépôt ouvert dès le vendredi 23h59)", "Chaque dimanche", "Quand on a le temps"], 0], ["Que risque-t-on si le compte rendu n’est pas remis à temps ?", ["Rien", "Une sanction", "Un bonus"], 1], ["En cas de doute sur une situation, que faire ?", ["Improviser", "Demander à un supérieur", "Attendre"], 1]] },
@@ -145,7 +161,7 @@ function norm(d) {
   c.ranks = c.ranks || DR.slice();
   if (!c.ranks.includes('Fondateur')) c.ranks.push('Fondateur');
   c.perm = Object.assign({ hg: 'Chef', dec: c.ranks[2] || c.ranks[0], pts: 'Bras Droit', set: 'Bras Droit' }, c.perm);
-  c.hooks = Object.assign({ rc: '', acc: '', ref: '', att: '', forma: '', cr: '', bak: '', base: '' }, c.hooks);
+  c.hooks = Object.assign({ rc: '', acc: '', ref: '', att: '', forma: '', formaRef: '', formaRappel: '', cr: '', bak: '', base: '' }, c.hooks);
   if (c.hooks.dec) { for (const k of ['acc', 'ref', 'att']) c.hooks[k] = c.hooks[k] || c.hooks.dec; delete c.hooks.dec }
   for (const k in c.hooks) c.hooks[k] = dec(c.hooks[k]);
   c.rankThreads = c.rankThreads || {};
@@ -153,7 +169,7 @@ function norm(d) {
   if ((c.ver || 0) < 2) { c.rq = DRQ; c.stats = DST; if (!c.quizzes.some(z => z.id == BQ.id)) c.quizzes.push(BQ); c.ver = 2 }
   c.rq = c.rq || DRQ;
   if (Array.isArray(c.rq)) c.rq = c.rq.map(q => q.replace(/\bADS\b/g, 'GSS'));
-  c.stats = c.stats || DST; c.home = c.home ?? DHOME; c.pingRoles = c.pingRoles || ['1538282326377893889']; c.reset = Object.assign({ on: true, tz: 'Europe/Paris' }, c.reset); d.lastReset = d.lastReset || wk(c.reset.tz);
+  c.stats = c.stats || DST; c.unitScales = (Array.isArray(c.unitScales) && c.unitScales.length) ? c.unitScales : DUS; c.home = c.home ?? DHOME; c.pingRoles = c.pingRoles || ['1538282326377893889']; c.reset = Object.assign({ on: true, tz: 'Europe/Paris' }, c.reset); d.lastReset = d.lastReset || wk(c.reset.tz);
   d.users = d.users || []; for (const h of c.hg || []) d.users.push({ id: h.id, name: h.name, code: h.code, rank: c.ranks[c.ranks.length - 1], rec: true });
   delete c.hg; delete c.qs; delete c.quiz; delete c.admin;
   for (const u of d.users) { if (u.code) { u.ck = hm(u.code); delete u.code } u.rank = u.rank || c.ranks[0]; u.pts = (u.pts || []).map(p => ({ t: 'mission', by: '-', ...p })); u.qz = (u.qz && typeof u.qz == 'object') ? u.qz : {}; u.did = u.did || ''; u.weeks = u.weeks || [] }
@@ -186,7 +202,7 @@ const mIds = t => [...String(t).matchAll(/<@!?(\d{5,25})>/g)].map(m => m[1]), rI
 // Un embed ne notifie personne : les mentions tapées sur le site sont donc aussi placées dans le message, avec une liste précise de personnes autorisées à être notifiées.
 // Les rôles tapés à la main ne sont notifiés que s'ils figurent dans la liste autorisée (Réglages).
 async function say(k, embeds, typed = '', targetOverride = null) {
-  let u = (targetOverride && String(targetOverride).startsWith('https://')) ? targetOverride : (db.cfg.hooks[k] || (k === 'base' ? db.cfg.hooks.cr : ''));
+  let u = (targetOverride && String(targetOverride).startsWith('https://')) ? targetOverride : (db.cfg.hooks[k] || (k === 'base' ? db.cfg.hooks.cr : (k === 'formaRef' || k === 'formaRappel') ? (db.cfg.hooks.forma || '') : ''));
   if (!u || !okHook(u)) return;
   if (targetOverride && /^\d{5,25}$/.test(String(targetOverride).trim())) {
     const tid = String(targetOverride).trim();
@@ -397,7 +413,7 @@ async function handle(req, res) {
   const cur = () => db.users.find(u => u.id == me.id) || usr;
   const view = () => {
     const c = db.cfg, P2 = perm(cur());
-    const pub = { name: c.name, ranks: c.ranks, perm: c.perm, stats: c.stats, rq: c.rq, tutos: c.tutos, home: c.home, reset: c.reset, quizzes: c.quizzes.map(z => ({ id: z.id, t: z.t, q: z.q.map(y => [y[0], y[1]]) })) };
+    const pub = { name: c.name, ranks: c.ranks, perm: c.perm, stats: c.stats, unitScales: c.unitScales || [], rq: c.rq, tutos: c.tutos, home: c.home, reset: c.reset, quizzes: c.quizzes.map(z => ({ id: z.id, t: z.t, q: z.q.map(y => [y[0], y[1]]) })) };
     const nc = u => { const { ck, ...x } = u; return x };
     return {
       cfg: P2.set ? { ...c, hooks: Object.fromEntries(Object.entries(c.hooks).map(([k, v]) => [k, mask(v)])), rankThreads: c.rankThreads || {} } : pub, users: P2.hg ? db.users.map(nc) : db.users.filter(u => u.id == me.id).map(nc),
@@ -430,6 +446,20 @@ async function handle(req, res) {
     n.tr = 1; n.trBy = me.name; n.trD = Date.now(); n.trNote = T(b.note, 800); LOG('forma', me.name, 'Formation terminée : ' + n.cand); save();
     say('forma', [E({ title: '🎓 Rapport de formation', color: 0x4fd6a0, description: '**Candidat :** ' + who(n.cand, n.did), fields: [{ name: 'Formé par', value: V(me.name), inline: true }, { name: 'Date', value: fd(today()), inline: true }, { name: 'Remarques', value: V(n.trNote) }] })], n.cand + ' ' + n.trNote); return out()
   }
+  if (m = r.match(/^POST \/api\/rc\/(\w+)\/train-refused$/)) {
+    if (!(me.rec || P.hg)) return send(403, { error: 'Accès refusé' }); const n = db.rcs.find(x => x.id == m[1]); if (!n) return send(404, { error: 'Introuvable' });
+    if (n.v != 'ok') return send(400, { error: 'Ce candidat n’est pas accepté' });
+    n.tr = 2; n.trBy = me.name; n.trD = Date.now(); n.trNote = T(b.note, 800); LOG('forma', me.name, 'Formation refusée : ' + n.cand); save();
+    const dest = (db.cfg.hooks && db.cfg.hooks.formaRef) ? 'formaRef' : 'forma';
+    say(dest, [E({ title: '❌ Formation refusée', color: 0xd64545, description: '**Candidat :** ' + who(n.cand, n.did), fields: [{ name: 'Décision de', value: V(me.name), inline: true }, { name: 'Date', value: fd(today()), inline: true }, { name: 'Motif du refus', value: V(n.trNote) }] })], (n.did ? '<@' + n.did + '> ' : '') + n.cand + ' ' + n.trNote); return out()
+  }
+  if (m = r.match(/^POST \/api\/rc\/(\w+)\/train-rappel$/)) {
+    if (!(me.rec || P.hg)) return send(403, { error: 'Accès refusé' }); const n = db.rcs.find(x => x.id == m[1]); if (!n) return send(404, { error: 'Introuvable' });
+    if (n.v != 'ok') return send(400, { error: 'Ce candidat n’est pas accepté' });
+    n.lastReminder = Date.now(); n.reminderBy = me.name; n.reminderNote = T(b.note, 800); LOG('forma', me.name, 'Rappel de formation : ' + n.cand); save();
+    const dest = (db.cfg.hooks && db.cfg.hooks.formaRappel) ? 'formaRappel' : 'forma';
+    say(dest, [E({ title: '⏰ Rappel de formation', color: 0xe0a12b, description: '**Candidat :** ' + who(n.cand, n.did) + '\n\nUn rappel a été envoyé concernant votre formation.', fields: [{ name: 'Rappel envoyé par', value: V(me.name), inline: true }, { name: 'Date', value: fd(today()), inline: true }, ...(n.reminderNote ? [{ name: 'Précisions', value: V(n.reminderNote) }] : [])] })], (n.did ? '<@' + n.did + '> ' : '') + n.cand + ' ' + (n.reminderNote || 'Rappel de formation')); return out()
+  }
   if (m = r.match(/^DELETE \/api\/rc\/(\w+)$/)) { if (!need('hg')) return; db.rcs = db.rcs.filter(x => x.id != m[1]); save(); return out() }
 
   // --- Comptes rendus : points calculés côté serveur ---
@@ -440,14 +470,34 @@ async function handle(req, res) {
     if ((db.crClosedDays || []).includes(date) && !P.founder) return send(400, { error: 'Les comptes rendus du samedi ' + fd(date) + ' sont clôturés par la direction.' });
     const alreadySent = db.crs.find(c => c.date === date && (c.uid === me.id || c.by.toLowerCase() === me.name.toLowerCase()));
     if (alreadySent && !P.founder) return send(400, { error: 'Tu as déjà envoyé ton compte rendu pour cette semaine (session du samedi ' + fd(date) + ').' });
-    const st = db.cfg.stats, vals = st.map((s, i) => s.rec && !me.rec ? null : Math.max(0, N((b.vals || [])[i]))), x = cur(), id = rnd(5),
-      pts = r2(st.reduce((t, s, i) => t + (vals[i] || 0) * s.p, 0)), op = N(b.op, 1e6), mis = r2(x.pts.filter(q => q.t == 'mission' && !q.rep).reduce((t, q) => t + q.v, 0)), total = r2(pts + op + mis),
-      L = l => st.map((s, i) => s.s == l && vals[i] !== null ? (s.e ? s.e + ' ' : '') + '• ' + s.l + ' : ' + vals[i] : null).filter(Boolean),
+    const st = db.cfg.stats, usName = T(b.unitScale, 60);
+    // Barème d'unité : si un nom de barème est fourni, on cherche la surcharge
+    const us = usName && (db.cfg.unitScales || []).find(u => u.name.trim().toLowerCase() === usName.trim().toLowerCase());
+    const getP = (s, i) => {
+      if (us && us.overrides) {
+        const ov = us.overrides.find(o => (o.l && (s.l.toLowerCase() === o.l.toLowerCase() || s.l.toLowerCase().includes(o.l.toLowerCase()))) || o.idx === i);
+        if (ov && ov.p != null) return N(ov.p, 1e6);
+      }
+      return s.p;
+    };
+    const getSecTitle = s => {
+      if (!s || s === 'main' || /^principale?$/i.test(s)) return 'Activité principale';
+      if (s === 'sec' || /^secondaire?$/i.test(s)) return 'Activité secondaire';
+      return s;
+    };
+    const vals = st.map((s, i) => s.rec && !me.rec ? null : Math.max(0, N((b.vals || [])[i]))), x = cur(), id = rnd(5),
+      pts = r2(st.reduce((t, s, i) => t + (vals[i] || 0) * getP(s, i), 0)), op = N(b.op, 1e6), mis = r2(x.pts.filter(q => q.t == 'mission' && !q.rep).reduce((t, q) => t + q.v, 0)), total = r2(pts + op + mis),
+      sections = [...new Set(st.map(s => s.s))],
+      L = l => st.map((s, i) => s.s == l && vals[i] !== null ? (s.e ? s.e + ' ' : '') + '• ' + s.l + ' : ' + vals[i] + (us && getP(s, i) !== s.p ? ' (' + getP(s, i) + ' pts/u)' : '') : null).filter(Boolean),
       f = { pseudo: T(b.pseudo, 60) || me.name, did: T(b.did, 25) || me.did, ot: T(b.ot, 300), prob: T(b.prob, 600), amel: T(b.amel, 600), ping: T(b.ping, 200), shib: T(b.shib, 400), tt: T(b.tt, 300) };
+    const sectionFields = sections.map((sec, si) => {
+      const lines = L(sec);
+      if (si === 0) lines.push('📜 • Autres activités effectuées : ' + (f.ot || '-') + ' (' + op + ' pts)');
+      return { name: getSecTitle(sec), value: V(lines.join('\n')) };
+    });
     const emb = E({
-      title: '📊 Compte rendu – ' + me.rank, description: '👤 • **Pseudo & Identifiant :** ' + who(f.pseudo, f.did) + '\n🏅 • **Rang :** ' + me.rank + '\n📅 • **Date du compte rendu :** ' + fd(date), fields: [
-        { name: 'Activité principale', value: V([...L('main'), '📜 • Autres activités effectuées : ' + (f.ot || '-') + ' (' + op + ' pts)'].join('\n')) },
-        { name: 'Activité secondaire', value: V(L('sec').join('\n')) },
+      title: '📊 Compte rendu – ' + me.rank + (us ? ' [' + us.name + ']' : ''), description: '👤 • **Pseudo & Identifiant :** ' + who(f.pseudo, f.did) + '\n🏅 • **Rang :** ' + me.rank + '\n📅 • **Date du compte rendu :** ' + fd(date) + (us ? '\n📐 • **Barème d\'unité :** ' + us.name : ''), fields: [
+        ...sectionFields,
         { name: 'Total de points', value: '**' + total + '** (stats : ' + pts + ', autres : ' + op + ', missions : ' + mis + ')' },
         { name: '🔗 Problèmes rencontrés sur le serveur', value: V(f.prob) }, { name: '💡 Améliorations suggérées', value: V(f.amel) }, { name: '🎓 Ping supérieurs hiérarchiques', value: V(f.ping) },
         { name: '📊 Activité Shibuya (optionnel)', value: V(f.shib) }, { name: 'Votre TikTok & Twitter', value: V(f.tt) }]
@@ -455,8 +505,8 @@ async function handle(req, res) {
     const txt = [emb.description, ...emb.fields.map(y => '\n' + y.name + '\n' + y.value)].join('\n');
     const add = r2(pts + op); if (add) x.pts.push({ v: add, w: 'Compte rendu du ' + fd(date), t: 'cr', by: 'système', d: Date.now() });
     x.pts.forEach(q => { if (q.t == 'mission' && !q.rep) q.rep = id });
-    db.crs.unshift({ id, uid: me.id, by: me.name, did: f.did, rank: me.rank, date, total, txt, d: Date.now() }); db.crs.length = Math.min(db.crs.length, 500);
-    LOG('cr', me.name, 'Compte rendu du ' + fd(date) + ' (' + me.rank + ') : ' + total + ' pts'); save();
+    db.crs.unshift({ id, uid: me.id, by: me.name, did: f.did, rank: me.rank, date, total, txt, unitScale: usName || null, d: Date.now() }); db.crs.length = Math.min(db.crs.length, 500);
+    LOG('cr', me.name, 'Compte rendu du ' + fd(date) + ' (' + me.rank + ')' + (usName ? ' [' + usName + ']' : '') + ' : ' + total + ' pts'); save();
 
     // Détection du fil ou webhook par rang
     const rkDest = (db.cfg.rankThreads || {})[me.rank] || '';
@@ -509,6 +559,33 @@ async function handle(req, res) {
     LOG('cr', me.name, 'Réouverture des CR du ' + fd(targetDay));
     save();
     return out({ reopenedDay: targetDay });
+  }
+
+  // --- Réinitialisation du statut des comptes rendus en mode automatique (Fondateur uniquement) ---
+  if (r == 'POST /api/cr/reset-day') {
+    if (!P.founder) return send(403, { error: 'Réservé au rôle Fondateur' });
+    const crSt = getCrStatus(db);
+    const targetDay = crSt.satDate;
+    delete db.crForceOpen;
+    db.crClosedDays = (db.crClosedDays || []).filter(d => d !== targetDay);
+    if (db.lb && db.lb.weekOf === targetDay) {
+      db.lb = null;
+    }
+    let removedCrs = 0;
+    if (b.clearCrs) {
+      const targetCrs = db.crs.filter(c => c.date === targetDay);
+      for (const cr of targetCrs) {
+        const u = db.users.find(x => x.id === cr.uid || x.name.toLowerCase() === cr.by.toLowerCase());
+        if (u && u.pts) {
+          u.pts = u.pts.filter(p => !(p.t === 'cr' && p.w && p.w.includes(fd(targetDay))));
+        }
+      }
+      db.crs = db.crs.filter(c => c.date !== targetDay);
+      removedCrs = targetCrs.length;
+    }
+    LOG('cr', me.name, 'Réinitialisation des CR en mode automatique pour le ' + fd(targetDay) + (removedCrs ? ' (' + removedCrs + ' CR supprimés)' : ''));
+    save();
+    return out({ resetDay: targetDay, removedCrs });
   }
 
   // --- Comptes, rangs, points ---
@@ -591,7 +668,7 @@ async function handle(req, res) {
     if (rk.length < 2 || !['hg', 'pts', 'set'].every(k => rk.includes(pm[k]))) return send(400, { error: 'Il faut au moins 2 rangs, et chaque permission doit viser un rang de la liste' });
     const u2 = db.users.find(u => !rk.includes(u.rank)); if (u2) return send(400, { error: 'Le rang « ' + u2.rank + ' » est encore utilisé par ' + u2.name + ' : change son rang avant' });
     if (!db.users.some(u => rk.indexOf(u.rank) >= rk.indexOf(pm.set))) return send(400, { error: 'Il doit rester un compte avec accès aux Réglages' });
-    const ho = {}; for (const k of ['rc', 'acc', 'ref', 'att', 'forma', 'cr', 'bak', 'base']) {
+    const ho = {}; for (const k of ['rc', 'acc', 'ref', 'att', 'forma', 'formaRef', 'formaRappel', 'cr', 'bak', 'base']) {
       const v = (b.hooks || {})[k];
       if (v == null || String(v).startsWith(MASK)) ho[k] = db.cfg.hooks[k] || '';
       else { ho[k] = T(v, 200); if (ho[k] && !okHook(ho[k])) return send(400, { error: 'Webhook « ' + k + ' » invalide : il doit commencer par https://discord.com/api/webhooks/' }) }
@@ -610,7 +687,8 @@ async function handle(req, res) {
     const pr = uq((Array.isArray(b.pingRoles) ? b.pingRoles : []).map(x => T(x, 25)).filter(x => /^\d{5,25}$/.test(x))).slice(0, 20);
     const O = x => (Array.isArray(x) ? x : []).slice(0, 10).map(o => T(o, 120)).filter(Boolean);
     const rq = (Array.isArray(b.rq) ? b.rq : []).slice(0, 60).map(x => T(x, 300)).filter(Boolean);
-    const stats = (Array.isArray(b.stats) ? b.stats : []).slice(0, 30).map(s => ({ s: s.s == 'sec' ? 'sec' : 'main', e: T(s.e, 60), l: T(s.l, 120), p: N(s.p, 1e6), ...(s.rec ? { rec: 1 } : {}) })).filter(s => s.l);
+    const stats = (Array.isArray(b.stats) ? b.stats : []).slice(0, 50).map(s => ({ s: T(s.s, 60) || 'Activité principale', e: T(s.e, 60), l: T(s.l, 120), p: N(s.p, 1e6), ...(s.rec ? { rec: 1 } : {}) })).filter(s => s.l);
+    const unitScales = (Array.isArray(b.unitScales) ? b.unitScales : []).slice(0, 20).map(u => ({ name: T(u.name, 60), overrides: (Array.isArray(u.overrides) ? u.overrides : []).slice(0, 50).map(o => ({ l: T(o.l, 120), idx: parseInt(o.idx) || 0, p: N(o.p, 1e6) })).filter(o => o.l || o.p != null) })).filter(u => u.name);
     const seen = {}, quizzes = (Array.isArray(b.quizzes) ? b.quizzes : []).slice(0, 30).map(z => {
       const id0 = slug(T(z.t, 80)); let id = id0, n = 1; while (seen[id]) id = id0 + '-' + (++n); seen[id] = 1;
       return { id, t: T(z.t, 80), q: (Array.isArray(z.q) ? z.q : []).slice(0, 40).map(y => [T(y[0]), O(y[1]), parseInt(y[2]) || 0]).filter(y => y[0] && y[1].length > 1 && y[2] >= 0 && y[2] < y[1].length) }
@@ -619,7 +697,7 @@ async function handle(req, res) {
     const pm2 = b.perm || {}; if (!rk.includes(pm2.dec)) return send(400, { error: 'La permission « décider des candidatures » doit viser un rang de la liste' });
     const rs = b.reset || {}; let tz = T(rs.tz, 60) || 'Europe/Paris'; try { new Intl.DateTimeFormat('en', { timeZone: tz }) } catch { return send(400, { error: 'Fuseau horaire invalide (exemple : Europe/Paris)' }) }
     const RS = { on: !!rs.on, tz }; if (RS.on != db.cfg.reset.on || RS.tz != db.cfg.reset.tz) db.lastReset = wk(tz);
-    db.cfg = { ...db.cfg, name: T(b.name, 40) || 'GSS', ranks: rk, perm: { hg: pm.hg, dec: pm2.dec, pts: pm.pts, set: pm.set }, hooks: ho, rankThreads, crPing: ping, pingRoles: pr, home: T(b.home, 6000), reset: RS, rq, stats, quizzes, tutos };
+    db.cfg = { ...db.cfg, name: T(b.name, 40) || 'GSS', ranks: rk, perm: { hg: pm.hg, dec: pm2.dec, pts: pm.pts, set: pm.set }, hooks: ho, rankThreads, crPing: ping, pingRoles: pr, home: T(b.home, 6000), reset: RS, rq, stats, unitScales, quizzes, tutos };
     LOG('cfg', me.name, 'Réglages modifiés'); save(); return out()
   }
   if (r == 'POST /api/hook-test') {

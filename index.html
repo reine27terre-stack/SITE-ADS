@@ -191,12 +191,56 @@ async function logout(){clearTimeout(pollT);await api('POST','logout',{},1);S=nu
 function go(p){page=p;fm=null;qid=null;flash=null;q='';render()}
 async function act(m,u,b,ok){const j=await api(m,u,b);if(j){if(j.newCode)flash=j.newCode;render();if(ok)toast(ok)}return j}
 
-const rcRow=r=>`<div class="card"><div class="top"><b>${e(r.cand)}</b><span class="mut">${e(r.did)}</span><span class="tag ${r.v}">${VL[r.v]}</span>${r.v=='ok'&&!r.tr?'<span class="tag form">En attente de formation</span>':''}${r.tr?'<span class="tag ok">Formé</span>':''}</div>
+const rcRow=r=>{
+  const isPending = r.v == 'ok' && !r.tr;
+  const isFormaOpen = fm && fm.id == r.id;
+  return `<div class="card"><div class="top"><b>${e(r.cand)}</b><span class="mut">${e(r.did)}</span><span class="tag ${r.v}">${VL[r.v]}</span>${isPending?'<span class="tag form">En attente de formation</span>':''}${r.tr==1?'<span class="tag ok">🎓 Formation effectuée</span>':(r.tr==2?'<span class="tag no">❌ Formation refusée</span>':'')}${r.lastReminder?`<span class="tag" style="background:rgba(243,156,18,.15);color:#f39c12;border:1px solid rgba(243,156,18,.3)">⏰ Rappel (${fd(new Date(r.lastReminder).toISOString().slice(0,10))})</span>`:''}</div>
 <p class="mut">Le ${fd(r.date)}. Réalisé par ${e(r.by)}, supervisé par ${e(r.sup||'-')}.</p>
 <details><summary>Voir l’entretien</summary>${(r.a||[]).map(x=>x[0]=='##'?`<h3>${e(x[1])}</h3>`:`<p><b>${e(x[0])}</b><br>${e(x[1]||'-')}</p>`).join('')}</details>
-${r.tr?`<p class="mut">Formé par ${e(r.trBy)}. ${e(r.trNote||'')}</p>`:''}
-<div class="acts">${can('hg')||can('dec')?`<button onclick="verd('${r.id}','ok')">Accepter</button><button class="ghost" onclick="verd('${r.id}','attente')">Mettre en attente</button><button class="ghost" onclick="verd('${r.id}','no')">Refuser</button>`:''}${can('hg')?`<button class="ghost" onclick="delRc('${r.id}')">Supprimer</button>`:''}${r.v=='ok'&&!r.tr?`<button class="ghost" onclick="fm='${r.id}';render()">Formation terminée</button>`:''}</div>
-${fm==r.id?`<form onsubmit="doTrain(event,'${r.id}')"><label>Remarques sur la formation<textarea name="n" rows="2"></textarea></label><button>Envoyer le rapport de formation</button></form>`:''}</div>`;
+${r.tr==1?`<p class="mut" style="color:var(--ok)">🎓 Formé par ${e(r.trBy)}. ${e(r.trNote||'')}</p>`:''}
+${r.tr==2?`<p class="mut" style="color:var(--bad)">❌ Formation refusée par ${e(r.trBy)}. Motif : ${e(r.trNote||'-')}</p>`:''}
+${r.lastReminder&&!r.tr?`<p class="mut" style="color:#f39c12">⏰ Dernier rappel par ${e(r.reminderBy||'-')}${r.reminderNote?' : '+e(r.reminderNote):''}</p>`:''}
+<div class="acts">
+  ${can('hg')||can('dec')?`<button onclick="verd('${r.id}','ok')">Accepter</button><button class="ghost" onclick="verd('${r.id}','attente')">Mettre en attente</button><button class="ghost" onclick="verd('${r.id}','no')">Refuser</button>`:''}
+  ${can('hg')?`<button class="ghost" onclick="delRc('${r.id}')">Supprimer</button>`:''}
+  ${r.v=='ok'&&(can('hg')||me.rec)?`
+    <button type="button" class="ghost" style="border:1px solid #2eb872;color:#2eb872" onclick="fm={id:'${r.id}',type:'done'};render()">🎓 Formation effectuée</button>
+    <button type="button" class="ghost" style="border:1px solid #e74c3c;color:#e74c3c" onclick="fm={id:'${r.id}',type:'refused'};render()">❌ Formation refusée</button>
+    <button type="button" class="ghost" style="border:1px solid #f39c12;color:#f39c12" onclick="fm={id:'${r.id}',type:'rappel'};render()">⏰ Rappel de formation</button>
+  `:''}
+</div>
+${isFormaOpen?`
+<div class="card" style="margin-top:12px;background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:10px;padding:14px">
+  ${fm.type=='done'?`
+    <form onsubmit="doTrain(event,'${r.id}')">
+      <b style="color:#2eb872">🎓 Valider la formation effectuée</b>
+      <label style="margin-top:8px">Remarques sur la formation<textarea name="n" rows="2" placeholder="Félicitations, formation validée avec succès..."></textarea></label>
+      <div class="acts" style="margin-top:8px">
+        <button style="background:#2eb872;color:#fff">Envoyer le rapport de formation</button>
+        <button type="button" class="ghost" onclick="fm=null;render()">Annuler</button>
+      </div>
+    </form>
+  `:fm.type=='refused'?`
+    <form onsubmit="doTrainRefuse(event,'${r.id}')">
+      <b style="color:#e74c3c">❌ Enregistrer le refus de formation</b>
+      <label style="margin-top:8px">Motif du refus de la formation<textarea name="n" rows="2" placeholder="Précise les motifs du refus (comportement, absence, test échoué...)" required></textarea></label>
+      <div class="acts" style="margin-top:8px">
+        <button style="background:#e74c3c;color:#fff">Confirmer le refus de formation</button>
+        <button type="button" class="ghost" onclick="fm=null;render()">Annuler</button>
+      </div>
+    </form>
+  `:fm.type=='rappel'?`
+    <form onsubmit="doTrainRappel(event,'${r.id}')">
+      <b style="color:#f39c12">⏰ Envoyer un rappel de formation</b>
+      <label style="margin-top:8px">Précisions ou heure prévue (facultatif)<textarea name="n" rows="2" placeholder="Ex: Merci de te présenter en vocal ce soir à 21h pour effectuer ta formation."></textarea></label>
+      <div class="acts" style="margin-top:8px">
+        <button style="background:#f39c12;color:#fff">Envoyer le rappel sur Discord</button>
+        <button type="button" class="ghost" onclick="fm=null;render()">Annuler</button>
+      </div>
+    </form>
+  `:''}
+</div>
+`:''}</div>`};
 
 const uCard=u=>`<div class="card"><div class="top"><b>${e(u.name)}</b><span class="tag rank">${e(u.rank)}</span>${u.rec?'<span class="tag">Recruteur</span>':''}<span class="tag">${tot(u)} pts</span></div>
 ${can('set')?`<div class="acts"><select onchange="setRank('${u.id}',this.value)">${S.cfg.ranks.map(r=>`<option${r==u.rank?' selected':''}>${e(r)}</option>`).join('')}</select><button class="ghost" onclick="newCode('${u.id}')">Nouveau code</button><button class="ghost" onclick="togRec('${u.id}')">Recruteur : ${u.rec?'retirer':'ajouter'}</button><button class="ghost" onclick="delU('${u.id}')">Supprimer</button></div>`:''}
@@ -220,49 +264,81 @@ team(){const fl=flash?`<div class="card flash"><b>Code de ${e(flash.name)}</b><d
  return `<h2>Profils</h2>${fl}${tut('Profils')}${SB('Rechercher un membre, un rang…')}${can('set')?`<form class="card" onsubmit="addU(event)"><h3>Nouveau compte</h3><div class="row"><label>Nom<input name="n" required></label><label>ID Discord<input name="did"></label></div><div class="row"><label>Rang<select name="rank">${(S.cfg.ranks.indexOf(me.rank)>=0?S.cfg.ranks.slice(0,S.cfg.ranks.indexOf(me.rank)+1):S.cfg.ranks).map(r=>`<option value="${e(r)}"${r=='Test'?' selected':''}>${e(r)}</option>`).join('')}</select></label><label>Code (vide = automatique, 8 caractères minimum)<input name="code" autocomplete="off"></label></div><label class="opt"><input type="checkbox" name="rec">Recruteur (peut faire des entretiens)</label><button>Créer le compte</button></form>`:''}
 ${can('pts')?`<form class="card" onsubmit="bulk(event)"><h3>Points en masse</h3><div class="row"><label>Points (négatif pour retirer)<input name="v" type="number" step="any" required></label><label>Motif ou mission<input name="w" required></label></div><p class="mut">Tous les membres d’un rang :</p><div class="acts">${S.cfg.ranks.map(r=>`<label class="opt chip"><input type="checkbox" name="rk" value="${e(r)}">${e(r)}</label>`).join('')}</div><p class="mut">Et/ou des membres précis :</p><div class="acts">${S.users.map(u=>`<label class="opt chip"><input type="checkbox" name="id" value="${u.id}">${e(u.name)}</label>`).join('')}</div><p></p><button>Ajouter les points aux personnes sélectionnées</button></form>`:''}<div class="search-list">${PAGES.team_list()}</div>`},
 team_list(){return S.users.filter(u=>mt(u.name)||mt(u.rank)||mt(u.did)).map(uCard).join('')||'<p class="mut">Aucun résultat.</p>'},
-cr(){const u=myu(),fields=s=>S.cfg.stats.map((x,i)=>x.s==s&&(!x.rec||me.rec)?`<label>${x.e.startsWith('<')?'':e(x.e)} ${e(x.l)}<input type="number" name="s${i}" min="0" step="any" value="0"></label>`:'').join('');
- const crSt = S.crStatus || { open: false, isClosed: false, inWindow: false, satDate: today(), nextOpenFri: today(), reason: '' };
- const alreadySent = S.crs.find(c => c.date === crSt.satDate && (c.uid === me.id || c.by.toLowerCase() === me.name.toLowerCase()));
- const founderCard = can('founder') ? `
+cr(){const u=myu();
+  const crSt = S.crStatus || { open: false, isClosed: false, inWindow: false, satDate: today(), nextOpenFri: today(), reason: '' };
+  const alreadySent = S.crs.find(c => c.date === crSt.satDate && (c.uid === me.id || c.by.toLowerCase() === me.name.toLowerCase()));
+  const isForced = !!crSt.isForceOpen;
+  const isManuallyClosed = !!crSt.isClosed;
+  const founderCard = can('founder') ? `
 <div class="card" style="border:1px solid rgba(76,201,240,.4);background:linear-gradient(135deg,rgba(76,201,240,.12),rgba(58,134,255,.06));margin-bottom:18px">
   <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
     <div>
-      <div style="display:flex;align-items:center;gap:8px">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <span style="font-size:22px">👑</span>
-        <b style="font-size:17px;color:var(--acc)">Gestion Fondateur – Clôture des comptes rendus</b>
-        ${crSt.open ? '<span class="tag ok">🟢 Ouvert aux membres</span>' : '<span class="tag no">🔒 Clôturé / Fermé</span>'}
+        <b style="font-size:17px;color:var(--acc)">Gestion Fondateur – Comptes rendus</b>
+        ${isForced ? '<span class="tag" style="background:rgba(255,183,3,.2);color:#ffb703;border:1px solid rgba(255,183,3,.4)">⚡ Forcé ouvert</span>' :
+          (isManuallyClosed ? '<span class="tag no">🔒 Clôturé manuellement</span>' :
+          (crSt.open ? '<span class="tag ok">🟢 Ouvert (Automatique)</span>' : '<span class="tag" style="background:rgba(76,201,240,.15);color:var(--acc);border:1px solid rgba(76,201,240,.3)">⏳ Fermé (Automatique - Ouvre ven. 23h59)</span>'))}
       </div>
-      <p class="mut" style="margin:4px 0 0;font-size:14px">Session du <b>samedi ${fd(crSt.satDate)}</b>. La clôture actualise immédiatement le classement officiel, le fige jusqu'au samedi suivant et notifie les retardataires sur Discord.</p>
+      <p class="mut" style="margin:4px 0 0;font-size:14px">
+        Session du <b>samedi ${fd(crSt.satDate)}</b>. 
+        ${isForced ? 'Les comptes rendus sont <b style="color:#ffb703">actuellement forcés ouverts</b> hors créneau. Clique sur « Réinitialiser » pour revenir au cycle normal.' :
+          (isManuallyClosed ? 'Les comptes rendus sont <b style="color:var(--bad)">clôturés</b>. Le classement officiel a été figé.' :
+          (crSt.open ? 'Les comptes rendus sont <b style="color:var(--ok)">ouverts</b> selon le cycle automatique.' :
+          'Le site ouvrira les comptes rendus <b style="color:var(--acc)">tout seul</b> le <b>vendredi à 23h59</b>.'))}
+      </p>
     </div>
-    <div class="acts" style="margin:0">
-      ${!crSt.open ? `<button type="button" class="ghost" onclick="reopenCrDay()">🔓 Ouvrir / Réouvrir</button>` : ''}
-      ${crSt.open ? `<button type="button" style="background:linear-gradient(135deg,#e63946,#d90429);color:#fff" onclick="closeCrDay()">🔒 Fermer et actualiser le classement</button>` : ''}
+    <div class="acts" style="margin:0;gap:8px;flex-wrap:wrap">
+      ${!crSt.open ? `<button type="button" class="ghost" onclick="reopenCrDay()">🔓 Ouvrir manuellement</button>` : ''}
+      ${crSt.open ? `<button type="button" style="background:linear-gradient(135deg,#e63946,#d90429);color:#fff" onclick="closeCrDay()">🔒 Fermer et actualiser</button>` : ''}
+      <button type="button" class="ghost" style="border:1px solid rgba(76,201,240,.5);color:var(--acc)" onclick="resetCrDay()" title="Remet le statut en automatique sans forcer l'ouverture ni la fermeture">🔄 Réinitialiser (Automatique)</button>
     </div>
   </div>
 </div>` : '';
 
- let statusBanner = '';
- if (!crSt.open) {
-   if (crSt.isClosed) {
-     statusBanner = `<div class="card" style="border-left:4px solid var(--bad);background:rgba(230,57,70,.08);margin-bottom:16px"><div style="display:flex;align-items:center;gap:12px"><span style="font-size:26px">🔒</span><div><b style="color:var(--bad)">Comptes rendus clôturés</b><p class="mut" style="margin:2px 0 0;font-size:14px">Les comptes rendus pour le <b>samedi ${fd(crSt.satDate)}</b> sont désormais clôturés par la direction. Le classement a été actualisé et reste figé jusqu'au samedi suivant.</p></div></div></div>`;
-   } else {
-     statusBanner = `<div class="card" style="border-left:4px solid var(--acc);background:rgba(76,201,240,.08);margin-bottom:16px"><div style="display:flex;align-items:center;gap:12px"><span style="font-size:26px">⏳</span><div><b style="color:var(--acc)">Dépôt des comptes rendus actuellement fermé</b><p class="mut" style="margin:2px 0 0;font-size:14px">Les comptes rendus sont à rendre une fois par semaine, le samedi. L'option de dépôt ouvre chaque <b>vendredi à 23h59</b>.<br>Prochaine ouverture : <b>vendredi ${fd(crSt.nextOpenFri)} à 23h59</b>.</p></div></div></div>`;
-   }
- } else if (alreadySent && !can('founder')) {
-   statusBanner = `<div class="card" style="border-left:4px solid var(--ok);background:rgba(46,184,114,.08);margin-bottom:16px"><div style="display:flex;align-items:center;gap:12px"><span style="font-size:26px">✅</span><div><b style="color:var(--ok)">Compte rendu validé pour cette semaine</b><p class="mut" style="margin:2px 0 0;font-size:14px">Tu as déjà soumis ton compte rendu pour la session du <b>samedi ${fd(crSt.satDate)}</b> (<b>${alreadySent.total} pts</b>). Le classement sera mis à jour à la clôture samedi soir.</p></div></div></div>`;
- } else {
-   statusBanner = `<div class="card" style="border-left:4px solid var(--ok);background:rgba(46,184,114,.08);margin-bottom:16px"><div style="display:flex;align-items:center;gap:12px"><span style="font-size:26px">📝</span><div><b style="color:var(--ok)">Dépôt des comptes rendus ouvert</b><p class="mut" style="margin:2px 0 0;font-size:14px">Session du <b>samedi ${fd(crSt.satDate)}</b> (à rendre une fois par semaine). Remplis le formulaire ci-dessous. Le classement restera figé jusqu'à la clôture.</p></div></div></div>`;
- }
+  let statusBanner = '';
+  if (!crSt.open) {
+    if (crSt.isClosed) {
+      statusBanner = `<div class="card" style="border-left:4px solid var(--bad);background:rgba(230,57,70,.08);margin-bottom:16px"><div style="display:flex;align-items:center;gap:12px"><span style="font-size:26px">🔒</span><div><b style="color:var(--bad)">Comptes rendus clôturés</b><p class="mut" style="margin:2px 0 0;font-size:14px">Les comptes rendus pour le <b>samedi ${fd(crSt.satDate)}</b> sont désormais clôturés par la direction. Le classement a été actualisé et reste figé jusqu'au samedi suivant.</p></div></div></div>`;
+    } else {
+      statusBanner = `<div class="card" style="border-left:4px solid var(--acc);background:rgba(76,201,240,.08);margin-bottom:16px"><div style="display:flex;align-items:center;gap:12px"><span style="font-size:26px">⏳</span><div><b style="color:var(--acc)">Dépôt des comptes rendus actuellement fermé</b><p class="mut" style="margin:2px 0 0;font-size:14px">Les comptes rendus sont à rendre une fois par semaine, le samedi. L'option de dépôt ouvre chaque <b>vendredi à 23h59</b>.<br>Prochaine ouverture : <b>vendredi ${fd(crSt.nextOpenFri)} à 23h59</b>.</p></div></div></div>`;
+    }
+  } else if (alreadySent && !can('founder')) {
+    statusBanner = `<div class="card" style="border-left:4px solid var(--ok);background:rgba(46,184,114,.08);margin-bottom:16px"><div style="display:flex;align-items:center;gap:12px"><span style="font-size:26px">✅</span><div><b style="color:var(--ok)">Compte rendu validé pour cette semaine</b><p class="mut" style="margin:2px 0 0;font-size:14px">Tu as déjà soumis ton compte rendu pour la session du <b>samedi ${fd(crSt.satDate)}</b> (<b>${alreadySent.total} pts</b>). Le classement sera mis à jour à la clôture samedi soir.</p></div></div></div>`;
+  } else {
+    statusBanner = `<div class="card" style="border-left:4px solid var(--ok);background:rgba(46,184,114,.08);margin-bottom:16px"><div style="display:flex;align-items:center;gap:12px"><span style="font-size:26px">📝</span><div><b style="color:var(--ok)">Dépôt des comptes rendus ouvert</b><p class="mut" style="margin:2px 0 0;font-size:14px">Session du <b>samedi ${fd(crSt.satDate)}</b> (à rendre une fois par semaine). Remplis le formulaire ci-dessous. Le classement restera figé jusqu'à la clôture.</p></div></div></div>`;
+  }
 
- const submitBtn = !crSt.open ?
-   `<button type="button" disabled style="opacity:.6;cursor:not-allowed">🔒 Comptes rendus fermés (ouverture vendredi 23h59)</button>` :
-   (alreadySent && !can('founder') ?
-     `<button type="button" disabled style="opacity:.6;cursor:not-allowed">✅ Compte rendu déjà envoyé pour cette semaine</button>` :
-     `<button>Envoyer le compte rendu</button>`);
+  const submitBtn = !crSt.open ?
+    `<button type="button" disabled style="opacity:.6;cursor:not-allowed">🔒 Comptes rendus fermés (ouverture vendredi 23h59)</button>` :
+    (alreadySent && !can('founder') ?
+      `<button type="button" disabled style="opacity:.6;cursor:not-allowed">✅ Compte rendu déjà envoyé pour cette semaine</button>` :
+      `<button>Envoyer le compte rendu</button>`);
 
- return `<h2>Comptes rendus</h2>${founderCard}${tut('Comptes rendus')}${statusBanner}<form class="card" oninput="calc(this)" onsubmit="addCr(event)"><div class="row"><label>Pseudo<input name="pseudo" value="${e(me.name)}"></label><label>ID Discord<input name="did" value="${e(me.did||'')}"></label></div><h3>Activité principale</h3>${fields('main')}<div class="row"><label>Autres activités effectuées<input name="ot"></label><label>Points accordés<input type="number" name="op" step="any" value="0"></label></div><h3>Activité secondaire</h3>${fields('sec')}<h3>Point de vue</h3><label>Problèmes rencontrés sur le serveur, si oui lesquels ?<textarea name="prob" rows="2"></textarea></label><label>Améliorations suggérées<textarea name="amel" rows="2"></textarea></label><label>Ping supérieurs hiérarchiques<input name="ping"></label><h3>Activité Shibuya (optionnel)</h3><label>Vos statistiques<input name="shib"></label><label>Votre TikTok et Twitter<input name="tt"></label><p class="note">Justificatifs obligatoires : toutes les stats doivent être prouvées et documentées dans le serveur « Stats Gestion Sécurité » et dans les channels prévus.</p><p class="note" id="tot"></p>${submitBtn}</form>
- ${SB('Rechercher un compte rendu (pseudo, date, texte…)')}<div class="search-list">${PAGES.cr_list()}</div>`},
-cr_list(){return S.crs.filter(c=>mt(c.by)||mt(c.date)||mt(c.total)||mt(c.txt)).map(c=>`<div class="card"><div class="top" style="justify-content:space-between"><div><b>${fd(c.date)}</b> — <b>${e(c.by)}</b> ${c.rank?`<span class="tag rank">${e(c.rank)}</span>`:''} <span class="tag">${c.total} pts</span></div>${c.decision?`<span class="tag ${c.decision.d=='up'?'ok':c.decision.d=='derank'?'no':'attente'}">${c.decision.d=='up'?'✅ Rank up':c.decision.d=='derank'?'⚠️ Derank':'⚖️ Stagné'} (par ${e(c.decision.by)})</span>`:''}</div><details style="margin-top:10px"><summary>Voir le détail du compte rendu</summary><p class="pre">${e(c.txt.replace(/<a?:\w+:\d+>/g,''))}</p></details>${can('hg')?`<div class="acts" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line);align-items:center"><span class="mut" style="font-size:13px;font-weight:600">Décision Discord :</span><button type="button" style="background:#2eb872;color:#fff;padding:6px 14px;font-size:13px;border-radius:8px" onclick="setDecision('${c.id}','up')">⬆️ Rank up</button><button type="button" style="background:#f39c12;color:#fff;padding:6px 14px;font-size:13px;border-radius:8px" onclick="setDecision('${c.id}','stagne')">➡️ Stagne</button><button type="button" style="background:#e74c3c;color:#fff;padding:6px 14px;font-size:13px;border-radius:8px" onclick="setDecision('${c.id}','derank')">⬇️ Derank</button></div>`:''}</div>`).join('')||'<p class="mut">Aucun résultat.</p>'},
+  const secMap = new Map();
+  (S.cfg.stats || []).forEach((x, i) => {
+    const st = getSecTitle(x.s);
+    if (!secMap.has(st)) secMap.set(st, []);
+    secMap.get(st).push({ x, i });
+  });
+
+  let secIdx = 0;
+  let dynamicSections = '';
+  for (const [st, items] of secMap.entries()) {
+    const flds = items.map(({ x, i }) => {
+      if (x.rec && !me.rec) return '';
+      return `<label>${x.e && !x.e.startsWith('<') ? e(x.e) + ' ' : ''}${e(x.l)} <span id="pts_lbl_${i}" class="mut" style="font-size:12px;font-weight:600">(${x.p} pts/u)</span><input type="number" name="s${i}" min="0" step="any" value="0"></label>`;
+    }).filter(Boolean).join('');
+    dynamicSections += `<h3>${e(st)}</h3>${flds}`;
+    if (secIdx === 0) {
+      dynamicSections += `<div class="row"><label>Autres activités effectuées<input name="ot"></label><label>Points accordés<input type="number" name="op" step="any" value="0"></label></div>`;
+    }
+    secIdx++;
+  }
+
+  return `<h2>Comptes rendus</h2>${founderCard}${tut('Comptes rendus')}${statusBanner}<form class="card" oninput="calc(this)" onsubmit="addCr(event)"><div class="row"><label>Pseudo<input name="pseudo" value="${e(me.name)}"></label><label>ID Discord<input name="did" value="${e(me.did||'')}"></label></div><label>Barème d’unité (adapte les points accordés)<select name="unitScale" onchange="onScaleChange(this.form)"><option value="">Standard (Barème général)</option>${(S.cfg.unitScales||[]).map(us=>`<option value="${e(us.name)}">${e(us.name)}</option>`).join('')}</select></label>${dynamicSections}<h3>Point de vue</h3><label>Problèmes rencontrés sur le serveur, si oui lesquels ?<textarea name="prob" rows="2"></textarea></label><label>Améliorations suggérées<textarea name="amel" rows="2"></textarea></label><label>Ping supérieurs hiérarchiques<input name="ping"></label><h3>Activité Shibuya (optionnel)</h3><label>Vos statistiques<input name="shib"></label><label>Votre TikTok et Twitter<input name="tt"></label><p class="note">Justificatifs obligatoires : toutes les stats doivent être prouvées et documentées dans le serveur « Stats Gestion Sécurité » et dans les channels prévus.</p><p class="note" id="tot"></p>${submitBtn}</form>
+  ${SB('Rechercher un compte rendu (pseudo, date, texte…)')}<div class="search-list">${PAGES.cr_list()}</div>`},
+cr_list(){return S.crs.filter(c=>mt(c.by)||mt(c.date)||mt(c.total)||mt(c.txt)||(c.unitScale&&mt(c.unitScale))).map(c=>`<div class="card"><div class="top" style="justify-content:space-between"><div><b>${fd(c.date)}</b> — <b>${e(c.by)}</b> ${c.rank?`<span class="tag rank">${e(c.rank)}</span>`:''} ${c.unitScale?`<span class="tag" style="background:rgba(76,201,240,.15);color:var(--acc);border:1px solid rgba(76,201,240,.3)">⚓ ${e(c.unitScale)}</span>`:''} <span class="tag">${c.total} pts</span></div>${c.decision?`<span class="tag ${c.decision.d=='up'?'ok':c.decision.d=='derank'?'no':'attente'}">${c.decision.d=='up'?'✅ Rank up':c.decision.d=='derank'?'⚠️ Derank':'⚖️ Stagné'} (par ${e(c.decision.by)})</span>`:''}</div><details style="margin-top:10px"><summary>Voir le détail du compte rendu</summary><p class="pre">${e(c.txt.replace(/<a?:\w+:\d+>/g,''))}</p></details>${can('hg')?`<div class="acts" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line);align-items:center"><span class="mut" style="font-size:13px;font-weight:600">Décision Discord :</span><button type="button" style="background:#2eb872;color:#fff;padding:6px 14px;font-size:13px;border-radius:8px" onclick="setDecision('${c.id}','up')">⬆️ Rank up</button><button type="button" style="background:#f39c12;color:#fff;padding:6px 14px;font-size:13px;border-radius:8px" onclick="setDecision('${c.id}','stagne')">➡️ Stagne</button><button type="button" style="background:#e74c3c;color:#fff;padding:6px 14px;font-size:13px;border-radius:8px" onclick="setDecision('${c.id}','derank')">⬇️ Derank</button></div>`:''}</div>`).join('')||'<p class="mut">Aucun résultat.</p>'},
 quiz(){const u=myu(),z=S.cfg.quizzes.find(x=>x.id==qid);
  if(z)return `<h2>${e(z.t)}</h2><form class="card" onsubmit="grade(event)">${z.q.map((q,i)=>`<fieldset><legend>${e(q[0])}</legend>${q[1].map((o,j)=>`<label class="opt"><input type="radio" name="q${i}" value="${j}" required>${e(o)}</label>`).join('')}</fieldset>`).join('')}<div class="acts"><button>Corriger</button><button type="button" class="ghost" onclick="qid=null;render()">Retour</button></div></form><p id="res"></p>`;
  return `<h2>Quiz</h2>${tut('Quiz')}${SB('Rechercher un quiz…')}<div class="search-list">${PAGES.quiz_list()}</div>`},
@@ -281,12 +357,13 @@ set(){const c=S.cfg,h=c.hooks,H=(k,l)=>`<label>${l}<span class="row"><input id="
  sel=(k,l)=>`<label>${l}<select id="p_${k}">${c.ranks.map(r=>`<option${r==c.perm[k]?' selected':''}>${e(r)}</option>`).join('')}</select></label>`,
  selp=(k,l)=>`<label>${l}<select id="p2_${k}">${c.ranks.map(r=>`<option${r==(c.perm||{})[k]?' selected':''}>${e(r)}</option>`).join('')}</select></label>`;
  return `<h2>Réglages</h2>${warns()}<form class="card" onsubmit="saveCfg(event)"><h3>Général</h3><label>Nom du site<input name="n" value="${e(c.name)}" required></label><label>Ping des comptes rendus (mention de rôle, laisser vide pour aucun)<input name="ping" value="${e(c.crPing)}"></label><label>Rôles que les membres ont le droit de mentionner dans les messages (IDs séparés par des espaces)<input name="proles" value="${e((c.pingRoles||[]).join(' '))}"></label><label>Page d’accueil : texte, images et vidéos (voir l’aide en bas de page)<textarea name="home" rows="8">${e(c.home||'')}</textarea></label>
-<h3>Webhooks Discord</h3><p class="mut">Les adresses sont masquées une fois enregistrées. Pour en changer une, colle la nouvelle adresse.</p>${H('rc','Rapports d’entretien')}${H('acc','Candidatures acceptées')}${H('ref','Candidatures refusées')}${H('att','Candidatures en attente')}${H('forma','Rapports de formation')}${H('cr','Comptes rendus')}${H('base','Salon de base (annonces rank up/derank et clôtures de CR) – ID 1550887934348103750')}${H('bak','Sauvegarde automatique quotidienne (salon privé réservé aux HG)')}
+<h3>Webhooks Discord</h3><p class="mut">Les adresses sont masquées une fois enregistrées. Pour en changer une, colle la nouvelle adresse.</p>${H('rc','Rapports d’entretien')}${H('acc','Candidatures acceptées')}${H('ref','Candidatures refusées')}${H('att','Candidatures en attente')}${H('forma','Rapports de formation effectuée')}${H('formaRef','Formations refusées')}${H('formaRappel','Rappels de formation')}${H('cr','Comptes rendus')}${H('base','Salon de base (annonces rank up/derank et clôtures de CR) – ID 1550887934348103750')}${H('bak','Sauvegarde automatique quotidienne (salon privé réservé aux HG)')}
 <h3>Fils Discord des comptes rendus par rang</h3><p class="mut">Indique pour chaque rang l’ID du fil (thread) Discord ou une URL webhook complète. Si laissé vide, le compte rendu part dans le webhook Comptes Rendus général.</p>${c.ranks.map(r=>`<label>Fil pour « ${e(r)} »<input class="rank-thread" data-rank="${e(r)}" value="${e((c.rankThreads||{})[r]||'')}" placeholder="ID du fil (ex: 1550887934348103750) ou URL Webhook"></label>`).join('')}
 <h3>Remise à zéro hebdomadaire des points</h3><label class="opt"><input type="checkbox" name="rson"${c.reset&&c.reset.on?' checked':''}>Remettre les points des profils à 0 chaque dimanche à 00h00 (fin du samedi)</label><label>Fuseau horaire<input name="rstz" value="${e((c.reset||{}).tz||'Europe/Paris')}"></label>
 <h3>Rangs et permissions</h3><label>Rangs, un par ligne, du plus bas au plus haut<textarea name="ranks" rows="6">${e(c.ranks.join('\n'))}</textarea></label>${sel('hg','Rang minimum pour tout voir et voir les logs')}${selp('dec','Rang minimum pour accepter, refuser ou mettre en attente une candidature')}${sel('pts','Rang minimum pour ajouter des points')}${sel('set','Rang minimum pour les Réglages et la gestion des comptes')}
 <h3>Questions de l’entretien</h3><label>Une par ligne. Une ligne qui commence par ## est un titre de section.<textarea name="rq" rows="10">${e(c.rq.join('\n'))}</textarea></label>
-<h3>Barème du compte rendu</h3><label>Une ligne par activité : principale ou secondaire | emoji | libellé | points par unité | recruteur (si réservé aux recruteurs)<textarea name="stats" rows="8">${e(c.stats.map(x=>[x.s=='sec'?'secondaire':'principale',x.e,x.l,x.p,x.rec?'recruteur':''].join(' | ')).join('\n'))}</textarea></label>
+<h3>Barème du compte rendu</h3><label>Une ligne par activité : Nom de catégorie personnalisé (ex: Activité principale, Activité secondaire, Pôle Naval, Pôle Prison...) | emoji | libellé | points par unité | recruteur (si réservé aux recruteurs)<textarea name="stats" rows="8">${e(c.stats.map(x=>[getSecTitle(x.s),x.e,x.l,x.p,x.rec?'recruteur':''].join(' | ')).join('\n'))}</textarea></label>
+<h3>Barèmes d’unité</h3><p class="mut">Configure ici les barèmes d'unité (ex: Unité Navale, Unité Prison School) qui modifient les points accordés dans le compte rendu.<br>Format : une ligne <code># Nom de l’unité</code>, puis une ligne par activité modifiée : <code>Libellé exact ou partiel de l'activité | points accordés</code>.<br>Les activités non mentionnées conservent automatiquement leurs points par défaut.</p><textarea name="unitScales" rows="8" placeholder="# Unité Navale&#10;Nombre de grab bataillon réalisés | 8&#10;Nombre de grab RC réalisés | 12&#10;&#10;# Unité Prison School&#10;Nombre de jail réalisés | 8&#10;Nombre de jail top 5 réalisés | 12">${e(formatUnitScales(c.unitScales))}</textarea>
 <h3>Quiz</h3><label>Une ligne # Titre pour chaque quiz, puis une question par ligne : Question | réponse 1 ; réponse 2 ; réponse 3 | numéro de la bonne réponse<textarea name="quizzes" rows="10">${e(c.quizzes.map(z=>'# '+z.t+'\n'+z.q.map(q=>q[0]+' | '+q[1].join(' ; ')+' | '+(q[2]+1)).join('\n')).join('\n\n'))}</textarea></label>
 <h3>Tutoriels</h3><label>Une ligne # Titre, puis le texte, avec images et vidéos possibles. Un titre identique au nom d’une page (Recrutement, Comptes rendus, Profils, Quiz, Accueil...) s’affiche aussi en haut de cette page.<textarea name="tutos" rows="12">${e(c.tutos.map(t=>'# '+t.t+'\n'+t.b).join('\n\n'))}</textarea></label>
 <button>Enregistrer les réglages</button></form>
@@ -312,11 +389,45 @@ function render(){const a=$('#app');document.title=(S?S.cfg.name:'GSS')+' – Es
  if(isS){const s=document.querySelector('input[type="search"]');if(s){s.focus();try{s.setSelectionRange(pos,pos)}catch(x){}}}
  const f=document.querySelector('form[oninput]');if(f)calc(f)}
 
-function calc(f){const d=new FormData(f);let t=0;S.cfg.stats.forEach((x,i)=>{if(d.has('s'+i))t+=(Number(d.get('s'+i))||0)*x.p});const op=Number(d.get('op'))||0,m=miss(myu());
- $('#tot').innerHTML=`Total estimé : <b>${r2(t+op+m)} points</b> (stats ${r2(t)}, autres activités ${op}, missions données ${m}).`}
+function getSecTitle(s){return (!s || s === 'main' || /^principale?$/i.test(s)) ? 'Activité principale' : ((s === 'sec' || /^secondaire?$/i.test(s)) ? 'Activité secondaire' : s)}
+function getTaskPoints(x, i, usName){
+  const us = (S.cfg.unitScales || []).find(u => u.name === usName);
+  if (us && us.overrides) {
+    const ov = us.overrides.find(o => (o.l && (x.l.toLowerCase() === o.l.toLowerCase() || x.l.toLowerCase().includes(o.l.toLowerCase()))) || o.idx === i);
+    if (ov && ov.p != null) return Number(ov.p);
+  }
+  return x.p;
+}
+function onScaleChange(f){
+  const usName = f.unitScale ? f.unitScale.value : '';
+  const us = (S.cfg.unitScales || []).find(u => u.name === usName);
+  (S.cfg.stats || []).forEach((x, i) => {
+    const el = document.getElementById('pts_lbl_' + i);
+    if (el) {
+      const p = getTaskPoints(x, i, usName);
+      el.innerHTML = (us && p !== x.p) ? `<span style="color:var(--acc);font-weight:700">(${p} pts/u ⚡)</span>` : `(${p} pts/u)`;
+    }
+  });
+  calc(f);
+}
+function formatUnitScales(scales){
+  if (!scales || !scales.length) return '# Unité Navale\nNombre de grab bataillon réalisés | 8\nNombre de grab RC réalisés | 12\n\n# Unité Prison School\nNombre de jail réalisés | 8\nNombre de jail top 5 réalisés | 12';
+  return scales.map(u => '# ' + u.name + '\n' + (u.overrides || []).map(o => (o.l || (S.cfg.stats[o.idx] ? S.cfg.stats[o.idx].l : 'Activité ' + o.idx)) + ' | ' + o.p).join('\n')).join('\n\n');
+}
+function calc(f){
+  const d = new FormData(f), usName = d.get('unitScale') || '';
+  let t = 0;
+  S.cfg.stats.forEach((x, i) => {
+    if (d.has('s' + i)) t += (Number(d.get('s' + i)) || 0) * getTaskPoints(x, i, usName);
+  });
+  const op = Number(d.get('op')) || 0, m = miss(myu());
+  $('#tot').innerHTML = `Total estimé : <b>${r2(t + op + m)} points</b> (stats ${r2(t)}, autres activités ${op}, missions données ${m}).` + (usName ? ` <span class="tag" style="background:rgba(76,201,240,.15);color:var(--acc);margin-left:8px">📐 Barème : ${e(usName)}</span>` : '');
+}
 function addRc(ev){ev.preventDefault();const f=new FormData(ev.target);act('POST','rc',{cand:f.get('cand'),did:f.get('did'),date:f.get('date'),by:f.get('by'),sup:f.get('sup'),a:S.cfg.rq.map((l,j)=>l.startsWith('##')?['##',l.replace(/^#+\s*/,'')]:[l,f.get('a'+j)])},'Rapport d’entretien envoyé')}
 function verd(id,v){act('POST','rc/'+id+'/verdict',{v},'Décision enregistrée')}
 async function doTrain(ev,id){ev.preventDefault();if(await act('POST','rc/'+id+'/trained',{note:new FormData(ev.target).get('n')},'Rapport de formation envoyé'))fm=null}
+async function doTrainRefuse(ev,id){ev.preventDefault();if(await act('POST','rc/'+id+'/train-refused',{note:new FormData(ev.target).get('n')},'Formation refusée enregistrée'))fm=null}
+async function doTrainRappel(ev,id){ev.preventDefault();if(await act('POST','rc/'+id+'/train-rappel',{note:new FormData(ev.target).get('n')},'Rappel de formation envoyé sur Discord'))fm=null}
 function conf(id,fn){if(pend!=id){pend=id;toast('Clique encore une fois pour confirmer');return}pend=null;fn()}
 function delRc(id){conf(id,()=>act('DELETE','rc/'+id))}
 function delU(id){conf(id,()=>act('DELETE','users/'+id))}
@@ -325,16 +436,30 @@ function togRec(id){act('POST','users/'+id+'/rec',{})}
 function setRank(id,rank){act('POST','users/'+id+'/rank',{rank}).then(j=>{if(!j)render()})}
 function addU(ev){ev.preventDefault();const f=new FormData(ev.target);act('POST','users',{n:f.get('n'),did:f.get('did'),rank:f.get('rank'),code:f.get('code'),rec:!!f.get('rec')},'Compte créé')}
 function addP(ev,id){ev.preventDefault();const f=new FormData(ev.target);act('POST','users/'+id+'/points',{v:Number(f.get('v')),w:f.get('w')},'Points ajoutés')}
-function addCr(ev){ev.preventDefault();const f=new FormData(ev.target);act('POST','cr',{pseudo:f.get('pseudo'),did:f.get('did'),vals:S.cfg.stats.map((x,i)=>f.get('s'+i)||0),ot:f.get('ot'),op:f.get('op'),prob:f.get('prob'),amel:f.get('amel'),ping:f.get('ping'),shib:f.get('shib'),tt:f.get('tt')}).then(j=>{if(j)toast('Compte rendu envoyé : '+j.total+' points')})}
+function addCr(ev){ev.preventDefault();const f=new FormData(ev.target);act('POST','cr',{pseudo:f.get('pseudo'),did:f.get('did'),unitScale:f.get('unitScale')||'',vals:S.cfg.stats.map((x,i)=>f.get('s'+i)||0),ot:f.get('ot'),op:f.get('op'),prob:f.get('prob'),amel:f.get('amel'),ping:f.get('ping'),shib:f.get('shib'),tt:f.get('tt')}).then(j=>{if(j)toast('Compte rendu envoyé : '+j.total+' points')})}
 async function grade(ev){ev.preventDefault();const f=new FormData(ev.target),z=S.cfg.quizzes.find(x=>x.id==qid),j=await api('POST','quiz',{id:qid,a:z.q.map((q,i)=>Number(f.get('q'+i)))});if(j)$('#res').textContent='Score : '+j.score+'/'+z.q.length+(j.score==z.q.length?'. Parfait.':'. Relis les tutoriels ou le règlement et réessaie.')}
 async function testHook(k){const url=$('#h_'+k).value.trim();if(!url){toast('Colle d’abord l’adresse du webhook');return}const j=await api('POST','hook-test',{k,url});if(j)toast(j.ok?'Message de test envoyé':'Discord a refusé cette adresse')}
 function saveCfg(ev){ev.preventDefault();const f=new FormData(ev.target);
  const lines=t=>String(t).split('\n').map(l=>l.trim()).filter(Boolean),cols=l=>l.split('|').map(x=>x.trim()),L=t=>t.split(';').map(o=>o.trim()).filter(Boolean),
  blocks=t=>{const o=[];let c=null;for(const l of String(t).split('\n')){if(l.startsWith('# ')){c={t:l.slice(2).trim(),l:[]};o.push(c)}else if(c&&l.trim())c.l.push(l.trim())}return o};
  const rankThreads={};document.querySelectorAll('.rank-thread').forEach(inp=>{const rk=inp.getAttribute('data-rank'),val=inp.value.trim();if(rk&&val)rankThreads[rk]=val});
- act('PUT','config',{name:f.get('n'),crPing:f.get('ping'),pingRoles:String(f.get('proles')).split(/\s+/).filter(Boolean),home:f.get('home'),reset:{on:!!f.get('rson'),tz:f.get('rstz')},hooks:Object.fromEntries(['rc','acc','ref','att','forma','cr','bak','base'].map(k=>[k,$('#h_'+k).value.trim()])),rankThreads,
+ const parsedStats = lines(f.get('stats')).map(cols).map(p => {
+   const cat = (p[0] || '').trim() || 'Activité principale';
+   return { s: cat, e: p[1] || '', l: p[2] || '', p: Number(String(p[3]).replace(',', '.')) || 0, rec: /rec|oui/i.test(p[4] || '') };
+ });
+ const parsedUnitScales = blocks(f.get('unitScales')).map(b => ({
+   name: b.t.trim(),
+   overrides: b.l.map(cols).map(p => {
+     const actQuery = p[0].trim();
+     const pts = Number(String(p[1]).replace(',', '.')) || 0;
+     const foundIdx = parsedStats.findIndex(s => s.l.toLowerCase() === actQuery.toLowerCase() || s.l.toLowerCase().includes(actQuery.toLowerCase()));
+     return { l: actQuery, idx: foundIdx >= 0 ? foundIdx : 0, p: pts };
+   }).filter(o => o.l)
+ })).filter(u => u.name);
+ act('PUT','config',{name:f.get('n'),crPing:f.get('ping'),pingRoles:String(f.get('proles')).split(/\s+/).filter(Boolean),home:f.get('home'),reset:{on:!!f.get('rson'),tz:f.get('rstz')},hooks:Object.fromEntries(['rc','acc','ref','att','forma','formaRef','formaRappel','cr','bak','base'].map(k=>[k,$('#h_'+k)?$('#h_'+k).value.trim():''])),rankThreads,
   ranks:lines(f.get('ranks')),perm:{hg:$('#p_hg').value,dec:$('#p2_dec').value,pts:$('#p_pts').value,set:$('#p_set').value},rq:lines(f.get('rq')),
-  stats:lines(f.get('stats')).map(cols).map(p=>({s:/^sec/i.test(p[0])?'sec':'main',e:p[1]||'',l:p[2]||'',p:Number(String(p[3]).replace(',','.'))||0,rec:/rec|oui/i.test(p[4]||'')})),
+  stats:parsedStats,
+  unitScales:parsedUnitScales,
   quizzes:blocks(f.get('quizzes')).map(z=>({t:z.t,q:z.l.map(cols).map(p=>[p[0],L(p[1]||''),(parseInt(p[2])||1)-1])})),
   tutos:blocks(f.get('tutos')).map(z=>({t:z.t,b:z.l.join('\n')}))},'Réglages enregistrés')}
 function backupNow(){api('POST','backup-now',{}).then(j=>j&&toast('Sauvegarde envoyée dans le salon'))}
@@ -343,6 +468,17 @@ function restore(){const f=$('#rf').files[0];if(!f){toast('Choisis un fichier de
 async function setDecision(id,d){const lbl={up:'Rank up',stagne:'Stagne',derank:'Derank'};if(!confirm(`Confirmer la décision « ${lbl[d]} » pour ce compte rendu ?\nUn message sera envoyé dans le salon Discord.`))return;await act('POST','cr/'+id+'/decision',{d},'Décision « '+lbl[d]+' » envoyée sur Discord !')}
 async function closeCrDay(){if(!confirm('Es-tu sûr de vouloir clôturer les comptes rendus de cette semaine ?\n\n• Le classement hebdomadaire sera immédiatement actualisé et restera figé jusqu’au samedi d’après.\n• La liste des membres n’ayant pas rendu leur compte rendu sera envoyée sur Discord.'))return;const j=await act('POST','cr/close-day',{},'Comptes rendus clôturés et classement actualisé !');if(j&&j.missingCount!=null)toast(`Clôturé : ${j.missingCount} retardataire(s) notifié(s) sur Discord`)}
 async function reopenCrDay(){if(!confirm('Réouvrir les comptes rendus pour cette session ?'))return;await act('POST','cr/reopen-day',{},'Comptes rendus réouverts')}
+async function resetCrDay(){
+  if(!confirm('Réinitialiser le statut des comptes rendus en mode automatique ?\n\n• Annule l’ouverture forcée et la clôture manuelle.\n• Le site gérera l’ouverture tout seul (chaque vendredi à 23h59 jusqu’au samedi).'))return;
+  const crSt = S.crStatus || {};
+  const currentSessionCrs = (S.crs || []).filter(c => c.date === crSt.satDate);
+  let clearCrs = false;
+  if (currentSessionCrs.length > 0) {
+    clearCrs = confirm(`Il y a ${currentSessionCrs.length} compte(s) rendu(s) déjà enregistré(s) pour la session du samedi ${fd(crSt.satDate)}.\n\nSouhaites-tu également effacer ces comptes rendus de test pour repartir à zéro ?\n(Clique sur "Annuler" pour les conserver)`);
+  }
+  const j = await act('POST', 'cr/reset-day', { clearCrs }, 'Statut des comptes rendus réinitialisé en mode automatique !');
+  if (j && j.removedCrs) toast(`${j.removedCrs} compte(s) rendu(s) effacé(s)`);
+}
 function cp(t){navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>toast('Copié'),()=>toast('Copie impossible'))}
 async function bulk(ev){ev.preventDefault();const f=new FormData(ev.target),j=await act('POST','points-bulk',{v:Number(f.get('v')),w:f.get('w'),ranks:f.getAll('rk'),ids:f.getAll('id')});if(j)toast(j.n+' membre(s) ont reçu les points')}
 async function upMedia(){const f=$('#mf').files[0];if(!f){toast('Choisis un fichier');return}if(f.size>15e6){toast('Fichier trop lourd (15 Mo maximum)');return}
