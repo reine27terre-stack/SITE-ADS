@@ -54,3 +54,4 @@ Chaque dimanche à 00h00 (heure de Paris par défaut, donc à la fin du samedi),
 
 ## Sauvegarde manuelle
 Les données sont dans `data/db.json` (sur le volume), les médias dans `data/media/`. Copie-les de temps en temps. Sans `SECRET` en variable, la clé est dans `data/secret.key` : garde-la avec la sauvegarde, sinon les webhooks ne pourront pas être relus.
+
